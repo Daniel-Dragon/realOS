@@ -1,6 +1,4 @@
-TrurlOS<sup>1</sup>
+realOS
 ===============================================================
-
-
-
-<sup>1</sup>This project is based on a similar [project](https://github.com/AlanClasses/TSOS) developed by fellow [G*](http://www.cs.albany.edu/~gstar/) [Alan Labouseur](http://www.labouseur.com) for his Operating Systems course.  
+Created by Daniel Foote for the Operating Systems at Saint Rose.
+  
