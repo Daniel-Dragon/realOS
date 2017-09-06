@@ -13,12 +13,13 @@ public class Globals {
 	/**
 	 * Constants
 	 */
-	public static final double version = Double.POSITIVE_INFINITY;
-	public static final String name = "TrurlOS";
+	public static final double version = 0.01d;
+	public static final String name = "realOS";
 	public static final int CPU_CLOCK_INTERVAL = 100;
 	public static final int TIMER_IRQ = 0;
 	public static final int KEYBOARD_IRQ = 1;
     public static Thread host;
+    public static final String defaultDateFormat = "yyyy/MM/dd HH:mm:ss";
 	
 	/**
 	 * Variables.

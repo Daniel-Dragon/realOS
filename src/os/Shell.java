@@ -1,11 +1,13 @@
 package os;
 
 import host.Control;
+import jdk.nashorn.internal.objects.Global;
 import util.Globals;
 import util.Utils;
 
 import java.util.ArrayList;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class Shell {
 	private String promptString = ">";
@@ -23,6 +25,7 @@ public class Shell {
 		commandList.add(new ShellCommand(shellCls, "cls", "- Clears the screen and resets the cursor position."));
 		commandList.add(new ShellCommand(shellMan, "man", "<topic> - Displays the MANual page for <topic>."));
 		commandList.add(new ShellCommand(shellTrace, "trace", "<on | off> - Turns the OS trace on or off."));
+		commandList.add(new ShellCommand(shellDate, "date", "Displays the current date and time."));
 		//I'm lazy.  Don't want to implement rot13 encryption.  Maybe there's something cooler anyway to do...
 		//commandList.add(new ShellCommand(shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>."));
 		putPrompt();
@@ -88,6 +91,27 @@ public class Shell {
 			return null;
 		}
 	};
+
+	public static ShellCommandFunction shellDate = new ShellCommandFunction() {
+        public Object execute(ArrayList<String> in) {
+            Date currDate = new Date();
+
+            if (in.isEmpty()) {
+                SimpleDateFormat defaultFormat = new SimpleDateFormat(Globals.defaultDateFormat);
+                Globals.standardOut.putText( defaultFormat.format(currDate) );
+            } else {
+                try {
+                    SimpleDateFormat customFormat = new SimpleDateFormat(in.toString());
+                    Globals.standardOut.putText(in.toString());
+                    Globals.standardOut.putText( customFormat.format(currDate));
+                }
+                catch(IllegalArgumentException e) {
+                    Globals.standardOut.putText("Error with your date format");
+                }
+            }
+            return null;
+        }
+    };
 	
 	public static ShellCommandFunction shellVer = new ShellCommandFunction() {
 		public Object execute(ArrayList<String> in) {
