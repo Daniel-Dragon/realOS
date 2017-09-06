@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 
 public class Shell {
 	private String promptString = ">";
-	private ArrayList<ShellCommand> commandList = new ArrayList<ShellCommand>();
+	private ArrayList<ShellCommand> commandList = new ArrayList<>();
 
 	public Shell() {
 		
@@ -59,7 +59,7 @@ public class Shell {
 			if(in.size() > 0) {
 				String topic = in.get(0);
 				if(topic.equals("help")) {
-					Globals.standardOut.putText("Help displays a list of (hopefully) valid commands.");
+					Globals.standardOut.putText("Help displays a list of valid commands.");
 				} else {
 					Globals.standardOut.putText("No manual entry for " + topic + ".");
 				}
@@ -101,8 +101,7 @@ public class Shell {
                 Globals.standardOut.putText( defaultFormat.format(currDate) );
             } else {
                 try {
-                    SimpleDateFormat customFormat = new SimpleDateFormat(in.toString());
-                    Globals.standardOut.putText(in.toString());
+                    SimpleDateFormat customFormat = new SimpleDateFormat(String.join(" ", in));
                     Globals.standardOut.putText( customFormat.format(currDate));
                 }
                 catch(IllegalArgumentException e) {
