@@ -30,6 +30,7 @@ public class Control {
 		//disable the start button.
 		//enable shutdown and reset buttons.
 		//refocus to console.
+		Globals.world.setMessage("System is running...");
 		cpu = new CPU();
 		//            _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
 		//      as seen above, must do something with clocks....
@@ -55,6 +56,7 @@ public class Control {
 	}
 	
 	public static void haltOS() {
+		Globals.world.setMessage("System is halted...");
 		Control.hostLog("Emergency Halt", "host");
 		Control.hostLog("Attempting Kernel Shutdown", "host");
 		kernel.kernelShutdown();

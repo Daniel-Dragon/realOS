@@ -170,11 +170,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	}
 
 	public String getCurrMessage() {
-		if (message.isEmpty()) {
-			return startActive ? "System Up..." : "System Down...";
-		} else {
-			return message;
-		}
+		return message;
 	}
 
 	public void setMessage(String newMessage) {
