@@ -158,26 +158,26 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		buttonPainter.setColor(Color.black);
 		buttonPainter.fillRect(165, 0, width - 165, 30);  //just clear the whole thing!
 		buttonPainter.setColor(Color.white);
-		buttonPainter.drawString(haltActive ? "System Up..." : "System Down...", 165, 22);
+		buttonPainter.drawString(startActive ? "System Up..." : "System Down...", 165, 22);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getX() < 4 + 81 && e.getX() > 3 && e.getY() > 30 && e.getY() <= 60) {
-			if(startActive) {
+			if(haltActive) {
 				Control.startOS();
-				startActive = false;
-				haltActive = true;
+				startActive = true;
+				haltActive = false;
 				drawStartButton(buttonPainter, startActive);
 				drawHaltButton(buttonPainter, haltActive);
 				message();
 				repaint();
 			}
 		} else if(e.getX() < 4 + 81 + 80 && e.getX() > 3 + 80 && e.getY() > 30 && e.getY() <= 60) {
-			if(haltActive) {
+			if(startActive) {
 				Control.haltOS();
-				startActive = true;
-				haltActive = false;
+				startActive = false;
+				haltActive = true;
 				drawStartButton(buttonPainter, startActive);
 				drawHaltButton(buttonPainter, haltActive);
 				message();
