@@ -68,7 +68,7 @@ public class Console implements Input, Output{
 		for (int i = 0; i < numChar; i++) {
 			String currText = buffer.substring(buffer.length() - 1, buffer.length());
 			int xOffset = Globals.world.measureText(XPos, currText);
-			int yOffset = Globals.world.fontSize();
+			int yOffset = Globals.world.fontSize() + Globals.world.fontDescent();
 			XPos -= xOffset;
 			//Globals.world.set(Color.blue);
 			Globals.world.clearRect(XPos, YPos - yOffset, xOffset, yOffset);
