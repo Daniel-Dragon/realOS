@@ -224,9 +224,9 @@ public class Shell {
 	public UserCommand parseInput(String buffer) {
 		UserCommand retVal;
 		buffer = buffer.trim();
-		buffer = buffer.toLowerCase();
+		//buffer = buffer.toLowerCase();
 		String[] parts = buffer.split(" ");
-		String name = parts[0];
+		String name = parts[0].toLowerCase();
 		retVal = new UserCommand(name);
 		for(int i = 1; i < parts.length; i++) {
 			String arg = parts[i].trim();
