@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 
 public class Shell {
 	private String promptString = ">";
-	private ArrayList<ShellCommand> commandList = new ArrayList<>();
+	private ArrayList<ShellCommand> commandList = new ArrayList<ShellCommand>();
 
 	public Shell() {
 		
@@ -59,7 +59,7 @@ public class Shell {
 			if(in.size() > 0) {
 				String topic = in.get(0);
 				if(topic.equals("help")) {
-					Globals.standardOut.putText("Help displays a list of valid commands.");
+					Globals.standardOut.putText("Help displays a list of (hopefully) valid commands.");
 				} else {
 					Globals.standardOut.putText("No manual entry for " + topic + ".");
 				}
@@ -111,7 +111,6 @@ public class Shell {
             return null;
         }
     };
-
 	public static ShellCommandFunction shellWhereAmI = new ShellCommandFunction() {
 		@Override
 		public Object execute(ArrayList<String> in) {
@@ -139,7 +138,6 @@ public class Shell {
 			return null;
 		}
 	};
-
 	public static ShellCommandFunction shellVer = new ShellCommandFunction() {
 		public Object execute(ArrayList<String> in) {
 			Globals.standardOut.putText(Globals.name + " version " + Globals.version);
