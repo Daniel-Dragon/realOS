@@ -45,6 +45,8 @@ public class Kernel {
 	}
 	
 	public void kernelOnCPUClockPulse() {
+		Globals.world.message();
+		Globals.world.repaint();
 		if(! Globals.kernelInterruptQueue.isEmpty()) {
 			Interrupt interrupt = Globals.kernelInterruptQueue.removeFirst();
 			kernelInterruptHandler(interrupt.irq, interrupt.params);
@@ -79,7 +81,6 @@ public class Kernel {
 	}
 
 	public void kernelTimerISR() {
-
 	}
 	
 	public void kernelTrace(String message) {

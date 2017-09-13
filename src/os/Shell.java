@@ -28,6 +28,7 @@ public class Shell {
 		commandList.add(new ShellCommand(shellDate, "date", "Displays the current date and time. Optional argument for format you wish to display the date in."));
 		commandList.add(new ShellCommand(shellWhereAmI, "whereami", "Displays your current location within the system."));
 		commandList.add(new ShellCommand(shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>."));
+		commandList.add(new ShellCommand(shellStatus, "status", "<string> - Changes the system status message."));
 		putPrompt();
 		
 	}
@@ -138,6 +139,15 @@ public class Shell {
 			return null;
 		}
 	};
+
+	public static ShellCommandFunction shellStatus = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			Globals.world.setMessage(String.join(" ", in));
+			return null;
+		}
+	};
+
 	public static ShellCommandFunction shellVer = new ShellCommandFunction() {
 		public Object execute(ArrayList<String> in) {
 			Globals.standardOut.putText(Globals.name + " version " + Globals.version);

@@ -8,9 +8,13 @@ package host;
  *  show the Image whenever the frame repaints itself. It is for 
  *  Turtle commands that are given in or from a main application. */
 
+import util.Globals;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /** A TurtleWorld is a JFrame on which an Image object is drawn each time 
  *  the JFrame is repainted.  Each Turtle draws on that Image object. */
@@ -25,6 +29,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private int width;
 	private int height;
 	private boolean startActive = true, haltActive = false;
+	private String message = "";
 
 	public TurtleWorld (int width, int height)
 	{	super ("Trurl -- The Operating System");  // set the title for the frame
@@ -158,7 +163,22 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		buttonPainter.setColor(Color.black);
 		buttonPainter.fillRect(165, 0, width - 165, 30);  //just clear the whole thing!
 		buttonPainter.setColor(Color.white);
-		buttonPainter.drawString(startActive ? "System Up..." : "System Down...", 165, 22);
+		Date currDate = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Globals.defaultDateFormat);
+		String drawString = dateFormat.format(currDate) + " " + getCurrMessage();
+		buttonPainter.drawString(drawString, 165, 22);
+	}
+
+	public String getCurrMessage() {
+		if (message.isEmpty()) {
+			return startActive ? "System Up..." : "System Down...";
+		} else {
+			return message;
+		}
+	}
+
+	public void setMessage(String newMessage) {
+		message = newMessage;
 	}
 
 	@Override
