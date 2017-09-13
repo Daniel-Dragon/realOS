@@ -83,6 +83,10 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		repaint();
 	}
 
+	public void deleteText(int xPos, int yPos) {
+		itsPage.drawString(" ", xPos, yPos);
+		repaint();
+	}
 
 	public int measureText(int xPos, String string) {
 		return itsMetrics.stringWidth(string);
@@ -110,7 +114,6 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
 
 	public int height() {
-		// TODO Auto-generated method stub
 		return height;
 	}
 

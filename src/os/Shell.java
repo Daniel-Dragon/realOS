@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 
 public class Shell {
 	private String promptString = ">";
-	private ArrayList<ShellCommand> commandList = new ArrayList<ShellCommand>();
+	private ArrayList<ShellCommand> commandList = new ArrayList<>();
 
 	public Shell() {
 		
@@ -25,9 +25,9 @@ public class Shell {
 		commandList.add(new ShellCommand(shellCls, "cls", "- Clears the screen and resets the cursor position."));
 		commandList.add(new ShellCommand(shellMan, "man", "<topic> - Displays the MANual page for <topic>."));
 		commandList.add(new ShellCommand(shellTrace, "trace", "<on | off> - Turns the OS trace on or off."));
-		commandList.add(new ShellCommand(shellDate, "date", "Displays the current date and time."));
-		//I'm lazy.  Don't want to implement rot13 encryption.  Maybe there's something cooler anyway to do...
-		//commandList.add(new ShellCommand(shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>."));
+		commandList.add(new ShellCommand(shellDate, "date", "Displays the current date and time. Optional argument for format you wish to display the date in."));
+		commandList.add(new ShellCommand(shellWhereAmI, "whereami", "Displays your current location within the system."));
+		commandList.add(new ShellCommand(shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>."));
 		putPrompt();
 		
 	}
@@ -59,7 +59,7 @@ public class Shell {
 			if(in.size() > 0) {
 				String topic = in.get(0);
 				if(topic.equals("help")) {
-					Globals.standardOut.putText("Help displays a list of (hopefully) valid commands.");
+					Globals.standardOut.putText("Help displays a list of valid commands.");
 				} else {
 					Globals.standardOut.putText("No manual entry for " + topic + ".");
 				}
@@ -101,8 +101,7 @@ public class Shell {
                 Globals.standardOut.putText( defaultFormat.format(currDate) );
             } else {
                 try {
-                    SimpleDateFormat customFormat = new SimpleDateFormat(in.toString());
-                    Globals.standardOut.putText(in.toString());
+                    SimpleDateFormat customFormat = new SimpleDateFormat(String.join(" ", in));
                     Globals.standardOut.putText( customFormat.format(currDate));
                 }
                 catch(IllegalArgumentException e) {
@@ -112,7 +111,35 @@ public class Shell {
             return null;
         }
     };
-	
+
+	public static ShellCommandFunction shellWhereAmI = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			Globals.standardOut.putText(Globals.currentLocation);
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellRot13 = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			String stringIn = String.join(" ", in);
+			StringBuilder stringOut = new StringBuilder();
+
+			for (char ch: stringIn.toCharArray()) {
+				if (Character.isLetter(ch)) {
+					char charOut = ((short)ch > Globals.asciiValM) ? (char)((short)ch - 13) : (char)((short)ch + 13);
+					stringOut.append(charOut);
+				} else {
+					stringOut.append(ch);
+				}
+			}
+
+			Globals.standardOut.putText(stringOut.toString());
+			return null;
+		}
+	};
+
 	public static ShellCommandFunction shellVer = new ShellCommandFunction() {
 		public Object execute(ArrayList<String> in) {
 			Globals.standardOut.putText(Globals.name + " version " + Globals.version);

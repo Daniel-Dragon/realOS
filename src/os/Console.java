@@ -2,6 +2,8 @@ package os;
 
 import util.Globals;
 
+import java.awt.*;
+
 public class Console implements Input, Output{
 	private String buffer = "";
 	private int XPos, YPos;
@@ -50,10 +52,28 @@ public class Console implements Input, Output{
 			if(next.equals("\n") || next.equals("\r") || next.equals("" + ((char)10))){
 				Globals.osShell.handleInput(buffer);
 				buffer = "";
+			} else if (next.equals("\b")) {
+				if (buffer.length() > 0) {
+					removeText(1);
+				}
 			} else {
 				putText("" + next);
 				buffer += next;
 			}
+		}
+	}
+
+	private void removeText(int numChar) {
+
+		for (int i = 0; i < numChar; i++) {
+			String currText = buffer.substring(buffer.length() - 1, buffer.length());
+			int xOffset = Globals.world.measureText(XPos, currText);
+			int yOffset = Globals.world.fontSize();
+			XPos -= xOffset;
+			//Globals.world.set(Color.blue);
+			Globals.world.clearRect(XPos, YPos - yOffset, xOffset, yOffset);
+
+			buffer = buffer.substring(0, buffer.length()-1);
 		}
 	}
 

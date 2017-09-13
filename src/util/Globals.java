@@ -20,7 +20,9 @@ public class Globals {
 	public static final int KEYBOARD_IRQ = 1;
     public static Thread host;
     public static final String defaultDateFormat = "yyyy/MM/dd HH:mm:ss";
-	
+    public static final String currentLocation = "You are here.";
+	public static final short asciiValM = 109;
+
 	/**
 	 * Variables.
 	 */

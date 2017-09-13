@@ -25,7 +25,8 @@ public class DeviceKeyboardDriver extends DeviceDriver {
 					character = keyCode+":"+modifiers;
 				} else if(keyCode >= 32 && keyCode <= 255) {
 					character = params.get("char");
-				} else if(keyCode == 10) { //this is the enter key on my mac...
+				} else if(keyCode == 10 || keyCode == 8) {
+					//Enter or Backspace
 					character = "" + ((char)keyCode);
 				} else {
 					character = keyCode+":"+modifiers;
