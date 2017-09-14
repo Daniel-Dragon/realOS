@@ -7,7 +7,7 @@ import java.awt.*;
 public class Console implements Input, Output{
 	private String buffer = "";
 	private LinkedList<String> inputBuffer = new LinkedList();
-	private int inputBufferIndex = 0;
+	private int inputBufferIndex = -1;
 	private StringBuilder outputBuffer = new StringBuilder(100);
 	private int XPos, YPos;
 	private String promptString = ">";
@@ -55,27 +55,33 @@ public class Console implements Input, Output{
 	public void handleInput() {
 		while(! Globals.kernelInputQueue.isEmpty()) {
 			String next = Globals.kernelInputQueue.removeFirst();
-			//if(next.length() > 1) continue; //TODO: handle special key strokes...
-			if(next.equals("\n") || next.equals("\r") || next.equals("" + ((char)10))){
+			System.out.println(next.length());
+			if(next.length() > 1) {
+			    //TODO Abstract these codes to Globals.
+                if (next.equals("38:0")) {
+                    //Up arrow
+                    nextInputBuffer();
+                } else if (next.equals("40:0")) {
+                    //Down arrow
+                    prevInputBuffer();
+                } else if (next.equals("9:0")) {
+                    //Tab key
+                    tabComplete();
+                } else {
+                    continue;
+                }
+            } else if(next.equals("\n") || next.equals("\r") || next.equals("" + ((char)10))){
 			    outputBuffer.append("\n");
 			    inputBuffer.offerFirst(buffer);
 				Globals.osShell.handleInput(buffer);
 				outputBuffer.append("\n");
 				putText(promptString);
 				buffer = "";
+				inputBufferIndex = -1;
 			} else if (next.equals("\b")) {
 				if (buffer.length() > 0) {
 					removeText(1);
 				}
-			} else if (next.equals("38:0")) {
-				//Up arrow
-				nextInputBuffer();
-			} else if (next.equals("40:0")) {
-				//Down arrow
-				prevInputBuffer();
-			} else if (next.equals("9:0")) {
-				//Tab key
-				tabComplete();
 			} else {
 				putText("" + next);
 				buffer += next;
@@ -105,8 +111,8 @@ public class Console implements Input, Output{
     }
 
     private void nextInputBuffer() {
-		if ((inputBuffer.size() > inputBufferIndex)) {
-		    setPromptString(inputBuffer.get(inputBufferIndex++));
+		if ((inputBuffer.size() > (inputBufferIndex + 1))) {
+		    setPromptString(inputBuffer.get(++inputBufferIndex));
 		}
 	}
 
