@@ -106,28 +106,33 @@ public class Console implements Input, Output{
 
     private void nextInputBuffer() {
 		if ((inputBuffer.size() > inputBufferIndex)) {
-			removeText(buffer.length());
-			buffer = inputBuffer.get(inputBufferIndex++);
-			XPos = 0;
-			putText(promptString + buffer);
+		    setPromptString(inputBuffer.get(inputBufferIndex++));
 		}
 	}
 
 	private void prevInputBuffer() {
 		if (inputBufferIndex > 0) {
-			removeText(buffer.length());
-			buffer = inputBuffer.get(--inputBufferIndex);
-			XPos = 0;
-			putText(promptString + buffer);
+		    setPromptString(inputBuffer.get(--inputBufferIndex));
 		}
 	}
-//	
-//	private void tabComplete() {
-//		if (!buffer.isEmpty()) {
-//
-//		}
-//	}
 
+	private void tabComplete() {
+		if (!buffer.isEmpty()) {
+            for (String input: inputBuffer) {
+                if (input.startsWith(buffer)) {
+                    setPromptString(input);
+                    break;
+                }
+            }
+		}
+	}
+
+	private void setPromptString (String string) {
+	    removeText(buffer.length());
+	    buffer = string;
+	    XPos = 0;
+	    putText(promptString + buffer);
+    }
 	@Override
 	public int getXPos() {
 		return XPos;
