@@ -26,7 +26,7 @@ public class DeviceKeyboardDriver extends DeviceDriver {
 				} else if(keyCode >= 32 && keyCode <= 255) {
 					character = params.get("char");
 				} else if(keyCode == 10 || keyCode == 8) {
-					//Enter or Backspace
+					//Enter or Backspace or arrow keys
 					character = "" + ((char)keyCode);
 				} else {
 					character = keyCode+":"+modifiers;

@@ -1,12 +1,16 @@
 package os;
 
 import util.Globals;
-
+import java.util.LinkedList;
 import java.awt.*;
 
 public class Console implements Input, Output{
 	private String buffer = "";
+	private LinkedList<String> inputBuffer = new LinkedList();
+	private int inputBufferIndex = 0;
+	private StringBuilder outputBuffer = new StringBuilder(100);
 	private int XPos, YPos;
+	private String promptString = ">";
 	public Console() {
 
 	}
@@ -15,14 +19,17 @@ public class Console implements Input, Output{
 		// TODO Auto-generated method stub
 		clearScreen();
 		resetXY();
+		putText(promptString);
 	}
 
 	@Override
 	public void putText(String string) {
 		if(!string.equals("")) {
 //                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-			Globals.world.drawText(XPos, YPos, string);
+			outputBuffer.append(string);
+            Globals.world.drawText(XPos, YPos, string);
 			int offset = Globals.world.measureText(XPos, string);
+			boolean test = needLineBreak(buffer);
 			XPos += offset;
 		}
 	}
@@ -48,14 +55,27 @@ public class Console implements Input, Output{
 	public void handleInput() {
 		while(! Globals.kernelInputQueue.isEmpty()) {
 			String next = Globals.kernelInputQueue.removeFirst();
-			if(next.length() > 1) continue; //TODO: handle special key strokes...
+			//if(next.length() > 1) continue; //TODO: handle special key strokes...
 			if(next.equals("\n") || next.equals("\r") || next.equals("" + ((char)10))){
+			    outputBuffer.append("\n");
+			    inputBuffer.offerFirst(buffer);
 				Globals.osShell.handleInput(buffer);
+				outputBuffer.append("\n");
+				putText(promptString);
 				buffer = "";
 			} else if (next.equals("\b")) {
 				if (buffer.length() > 0) {
 					removeText(1);
 				}
+			} else if (next.equals("38:0")) {
+				//Up arrow
+				nextInputBuffer();
+			} else if (next.equals("40:0")) {
+				//Down arrow
+				prevInputBuffer();
+			} else if (next.equals("9:0")) {
+				//Tab key
+				tabComplete();
 			} else {
 				putText("" + next);
 				buffer += next;
@@ -66,6 +86,7 @@ public class Console implements Input, Output{
 	private void removeText(int numChar) {
 
 		for (int i = 0; i < numChar; i++) {
+		    outputBuffer.deleteCharAt(outputBuffer.length() - 1);
 			String currText = buffer.substring(buffer.length() - 1, buffer.length());
 			int xOffset = Globals.world.measureText(XPos, currText);
 			int yOffset = Globals.world.fontSize();
@@ -75,6 +96,37 @@ public class Console implements Input, Output{
 			buffer = buffer.substring(0, buffer.length()-1);
 		}
 	}
+
+	private boolean needLineBreak(String string) {
+	    int textWidth = Globals.world.measureText(0, " ");
+	    int windowWidth = Globals.world.width();
+	    int stringWidth = (string.length() + promptString.length()) * textWidth;
+	    return (windowWidth - stringWidth) < textWidth;
+    }
+
+    private void nextInputBuffer() {
+		if ((inputBuffer.size() > inputBufferIndex)) {
+			removeText(buffer.length());
+			buffer = inputBuffer.get(inputBufferIndex++);
+			XPos = 0;
+			putText(promptString + buffer);
+		}
+	}
+
+	private void prevInputBuffer() {
+		if (inputBufferIndex > 0) {
+			removeText(buffer.length());
+			buffer = inputBuffer.get(--inputBufferIndex);
+			XPos = 0;
+			putText(promptString + buffer);
+		}
+	}
+//	
+//	private void tabComplete() {
+//		if (!buffer.isEmpty()) {
+//
+//		}
+//	}
 
 	@Override
 	public int getXPos() {

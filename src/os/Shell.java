@@ -10,7 +10,6 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class Shell {
-	private String promptString = ">";
 	private ArrayList<ShellCommand> commandList = new ArrayList<ShellCommand>();
 
 	public Shell() {
@@ -29,20 +28,19 @@ public class Shell {
 		commandList.add(new ShellCommand(shellWhereAmI, "whereami", "Displays your current location within the system."));
 		commandList.add(new ShellCommand(shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>."));
 		commandList.add(new ShellCommand(shellStatus, "status", "<string> - Changes the system status message."));
-		putPrompt();
 		
 	}
 	
-	public static ShellCommandFunction shellPrompt = new ShellCommandFunction() {
-		public Object execute(ArrayList<String> in) {
-			if (in.size() > 0) {
-				Globals.osShell.setPrompt(in.get(0));
-        } else {
-            Globals.standardOut.putText("Usage: prompt <string>.  Please supply a string.");
-        }
-			return null;
-		}
-	};
+//	public static ShellCommandFunction shellPrompt = new ShellCommandFunction() {
+//		public Object execute(ArrayList<String> in) {
+//			if (in.size() > 0) {
+//				Globals.osShell.setPrompt(in.get(0));
+//        } else {
+//            Globals.standardOut.putText("Usage: prompt <string>.  Please supply a string.");
+//        }
+//			return null;
+//		}
+//	};
 	
 	public static ShellCommandFunction shellHexDump = new ShellCommandFunction() {
 		public Object execute(ArrayList<String> in) {
@@ -189,14 +187,6 @@ public class Shell {
 		}
 	};
 
-	protected void setPrompt(String string) {
-		promptString = string;
-	}
-	
-	public void putPrompt() {
-		Globals.standardOut.putText(promptString);
-	}
-
 	public void handleInput(String buffer) {
 		Control.kernel.kernelTrace("Shell Command~" + buffer);
 		UserCommand userCommand = parseInput(buffer);
@@ -218,7 +208,6 @@ public class Shell {
 		if(Globals.standardOut.getXPos() > 0) {
 			Globals.standardOut.advanceLine();
 		}
-		putPrompt();
 	}
 	
 	public UserCommand parseInput(String buffer) {
