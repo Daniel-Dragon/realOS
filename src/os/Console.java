@@ -77,7 +77,6 @@ public class Console implements Input, Output{
 				buffer = "";
 				inputBufferIndex = -1;
 			} else if (next.equals("\b")) {
-            	Globals.world.shiftUp();
 				if (buffer.length() > 0) {
 					removeText(1);
 				}
