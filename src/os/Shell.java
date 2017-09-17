@@ -26,8 +26,9 @@ public class Shell {
 		commandList.add(new ShellCommand(shellTrace, "trace", "<on | off> - Turns the OS trace on or off."));
 		commandList.add(new ShellCommand(shellDate, "date", "Displays the current date and time. Optional argument for format you wish to display the date in."));
 		commandList.add(new ShellCommand(shellWhereAmI, "whereami", "Displays your current location within the system."));
-		commandList.add(new ShellCommand(shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>."));
-		commandList.add(new ShellCommand(shellStatus, "status", "<string> - Changes the system status message."));
+		commandList.add(new ShellCommand(shellRot13, "rot13", "<string | message> - Does rot13 obfuscation on <string>."));
+		commandList.add(new ShellCommand(shellStatus, "status", "<string | status> - Changes the system status message."));
+		commandList.add(new ShellCommand(shellBsod, "bsod", "<string | reason> - Brings up the BSOD with the reason given."));
 		
 	}
 	
@@ -183,6 +184,15 @@ public class Shell {
 	public static ShellCommandFunction shellInvalidCommand = new ShellCommandFunction() {
 		public Object execute(ArrayList<String> in) {
 			Globals.standardOut.putText("Invalid Command. ");
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellBsod = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> input) {
+			Globals.world.blueScreen(String.join(" ", input));
+			shellStatus.execute(input);
 			return null;
 		}
 	};

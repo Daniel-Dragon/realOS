@@ -259,6 +259,15 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		return (YPos >= Globals.world.getConsoleHeight());
 	}
 
+	public void blueScreen(String reason) {
+	    int topOfScreen = (itsPictureTop < 0) ? -itsPictureTop : 0;
+	    itsPage.setColor(Color.blue);
+        itsPage.fillRect(0, topOfScreen, width, height);
+        itsPage.setColor(Color.black);
+	    itsPage.drawString(reason, 0, topOfScreen + getLineHeight());
+	    Control.kernel.kernelTrapError(reason);
+    }
+
 }
 // </pre>
 
