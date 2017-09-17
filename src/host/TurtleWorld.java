@@ -13,6 +13,7 @@ import util.Globals;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,6 +22,7 @@ import java.util.Date;
 
 public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private static final int EDGE = 13, TOP = 60;  // around the JFrame
+	private int itsPictureTop = TOP;
 	private Image itsPicture;
 	private Image buttonSpace;
 	private Graphics itsPage;
@@ -30,6 +32,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private int height;
 	private boolean startActive = true, haltActive = false;
 	private String message = "";
+	private static final GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
 	public TurtleWorld (int width, int height)
 	{	super ("Trurl -- The Operating System");  // set the title for the frame
@@ -58,15 +61,18 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	public void begin (int width, int height)
 	{	itsPicture = new java.awt.image.BufferedImage (width, height, 
 			           java.awt.image.BufferedImage.TYPE_INT_RGB);
-		itsPage = itsPicture.getGraphics();
-		itsPage.setColor (Color.black);
+		initItsPage();
 		itsPage.fillRect (0, 30, width, height);
-		itsPage.setColor (Color.white);
-		itsPage.setFont(new Font("monospaced", Font.PLAIN, 12));  //monospaced is easy to read and deal with...
 		itsMetrics = itsPage.getFontMetrics();
 		repaint();
 	}	//======================
 
+	private void initItsPage() {
+		itsPage = itsPicture.getGraphics();
+		itsPage.setColor (Color.black);
+		itsPage.setColor (Color.white);
+		itsPage.setFont(new Font("monospaced", Font.PLAIN, 12));  //monospaced is easy to read and deal with...
+	}
 
 	public Graphics getPage()
 	{	return itsPage; // itsPicture.getGraphics(); => NO COLORS
@@ -75,21 +81,17 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
 	public void paint (Graphics g)
 	{	if (itsPicture != null)
-			g.drawImage (itsPicture, EDGE, TOP, this);
+			g.drawImage (itsPicture, EDGE, itsPictureTop, this);
 			g.drawImage(buttonSpace, EDGE, TOP-30, width, 30, this);
 	}	//======================
 
 
 	public void drawText(int xPos, int yPos, String string) {
 //		if(true) throw new RuntimeException();
-		// TODO Auto-generated method stub
+		if (needToShiftUp(yPos))
+			shiftUp();
 		itsPage.drawString(string, xPos, yPos);
 //		System.out.println("painting \"" + string + "\"" + " at (" + xPos + ", " + yPos + ")");
-		repaint();
-	}
-
-	public void deleteText(int xPos, int yPos) {
-		itsPage.drawString(" ", xPos, yPos);
 		repaint();
 	}
 
@@ -226,6 +228,37 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		// TODO Auto-generated method stub
 
 	}
+
+	public int getLineHeight() {
+		return fontSize() + fontDescent() + fontHeightMargin();
+	}
+
+	public int getConsoleHeight() {
+		//height by default, plus the itsPictureTop since this becomes negative it will actually add to the height.
+		return height - itsPictureTop - TOP;
+	}
+
+	public void shiftUp() {
+		int lineHeight = getLineHeight();
+		itsPictureTop -= lineHeight;
+		int height = itsPicture.getHeight(this);
+		Image altered = new java.awt.image.BufferedImage (width, height + lineHeight,
+				java.awt.image.BufferedImage.TYPE_INT_RGB);
+
+//		BufferedImage altered = config.createCompatibleImage(itsPicture.getWidth(this), itsPicture.getHeight(this) + lineHeight);
+
+		altered.getGraphics().drawImage(itsPicture, 0, 0, this);
+
+
+		itsPicture = altered;
+		initItsPage();
+
+	}
+
+	private boolean needToShiftUp(int YPos) {
+		return (YPos >= Globals.world.getConsoleHeight());
+	}
+
 }
 // </pre>
 

@@ -29,7 +29,6 @@ public class Console implements Input, Output{
 			outputBuffer.append(string);
             Globals.world.drawText(XPos, YPos, string);
 			int offset = Globals.world.measureText(XPos, string);
-			boolean test = needLineBreak(buffer);
 			XPos += offset;
 		}
 	}
@@ -55,7 +54,6 @@ public class Console implements Input, Output{
 	public void handleInput() {
 		while(! Globals.kernelInputQueue.isEmpty()) {
 			String next = Globals.kernelInputQueue.removeFirst();
-			System.out.println(next.length());
 			if(next.length() > 1) {
 			    //TODO Abstract these codes to Globals.
                 if (next.equals("38:0")) {
@@ -79,6 +77,7 @@ public class Console implements Input, Output{
 				buffer = "";
 				inputBufferIndex = -1;
 			} else if (next.equals("\b")) {
+            	Globals.world.shiftUp();
 				if (buffer.length() > 0) {
 					removeText(1);
 				}
@@ -139,6 +138,7 @@ public class Console implements Input, Output{
 	    XPos = 0;
 	    putText(promptString + buffer);
     }
+
 	@Override
 	public int getXPos() {
 		return XPos;
