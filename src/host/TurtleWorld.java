@@ -268,6 +268,10 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	    Control.kernel.kernelTrapError(reason);
     }
 
+    public int getCharacterWidth() {
+		return ((width - (EDGE * 2)) /measureText(0, "x"));
+	}
+
 }
 // </pre>
 

@@ -8,8 +8,7 @@ public class Console implements Input, Output{
 	private String buffer = "";
 	private LinkedList<String> inputBuffer = new LinkedList();
 	private int inputBufferIndex = -1;
-	private StringBuilder outputBuffer = new StringBuilder(100);
-	private int XPos, YPos;
+	private int XPos, YPos, endXPos;
 	private String promptString = ">";
 	public Console() {
 
@@ -19,6 +18,7 @@ public class Console implements Input, Output{
 		// TODO Auto-generated method stub
 		clearScreen();
 		resetXY();
+		endXPos = Globals.world.getCharacterWidth() * Globals.world.measureText(0, "x");
 		putText(promptString);
 	}
 
@@ -26,7 +26,8 @@ public class Console implements Input, Output{
 	public void putText(String string) {
 		if(!string.equals("")) {
 //                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-			outputBuffer.append(string);
+			if (needLineBreak(string))
+				advanceLine();
             Globals.world.drawText(XPos, YPos, string);
 			int offset = Globals.world.measureText(XPos, string);
 			XPos += offset;
@@ -37,6 +38,11 @@ public class Console implements Input, Output{
 	public void advanceLine() {
 		XPos = 0;
 		YPos += Globals.world.fontHeightMargin() + Globals.world.fontDescent() + Globals.world.fontSize();
+	}
+
+	public void retreatLine() {
+		XPos = endXPos;
+		YPos -= Globals.world.getLineHeight();
 	}
 
 	@Override
@@ -69,10 +75,8 @@ public class Console implements Input, Output{
                     continue;
                 }
             } else if(next.equals("\n") || next.equals("\r") || next.equals("" + ((char)10))){
-			    outputBuffer.append("\n");
 			    inputBuffer.offerFirst(buffer);
 				Globals.osShell.handleInput(buffer);
-				outputBuffer.append("\n");
 				putText(promptString);
 				buffer = "";
 				inputBufferIndex = -1;
@@ -90,7 +94,8 @@ public class Console implements Input, Output{
 	private void removeText(int numChar) {
 
 		for (int i = 0; i < numChar; i++) {
-		    outputBuffer.deleteCharAt(outputBuffer.length() - 1);
+			if (XPos == 0)
+				retreatLine();
 			String currText = buffer.substring(buffer.length() - 1, buffer.length());
 			int xOffset = Globals.world.measureText(XPos, currText);
 			int yOffset = Globals.world.fontSize();
@@ -102,10 +107,7 @@ public class Console implements Input, Output{
 	}
 
 	private boolean needLineBreak(String string) {
-	    int textWidth = Globals.world.measureText(0, " ");
-	    int windowWidth = Globals.world.width();
-	    int stringWidth = (string.length() + promptString.length()) * textWidth;
-	    return (windowWidth - stringWidth) < textWidth;
+	    return ((Globals.world.measureText(0, string) + XPos) > endXPos);
     }
 
     private void nextInputBuffer() {
