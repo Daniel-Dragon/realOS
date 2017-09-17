@@ -29,6 +29,7 @@ public class Shell {
 		commandList.add(new ShellCommand(shellRot13, "rot13", "<string | message> - Does rot13 obfuscation on <string>."));
 		commandList.add(new ShellCommand(shellStatus, "status", "<string | status> - Changes the system status message."));
 		commandList.add(new ShellCommand(shellBsod, "bsod", "<string | reason> - Brings up the BSOD with the reason given."));
+		commandList.add(new ShellCommand(shellLoad, "load", "Loads program into main memory."));
 		
 	}
 	
@@ -193,6 +194,17 @@ public class Shell {
 		public Object execute(ArrayList<String> input) {
 			Globals.world.blueScreen(String.join(" ", input));
 			shellStatus.execute(input);
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellLoad = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> input) {
+			if (java.util.regex.Pattern.compile("([0-9]*\\s*)*").matcher(String.join(" ", input)).matches())
+				Globals.console.putText("Valid program");
+			else
+				Globals.console.putText("Invalid program!");
 			return null;
 		}
 	};
