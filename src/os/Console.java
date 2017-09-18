@@ -34,7 +34,7 @@ public class Console implements Input, Output{
 	public void writeText(String string) {
 		if (!string.equals("")) {
 			if (needLineBreak(string))
-				advanceLine();
+				inputLineBreak();
 			Globals.world.drawText(XPos, YPos, string);
 			int offset = Globals.world.measureText(XPos, string);
 			XPos += offset;
@@ -189,6 +189,28 @@ public class Console implements Input, Output{
 	@Override
 	public int getXPos() {
 		return XPos;
+	}
+
+	private void inputLineBreak() {
+		int checkPlace = buffer.length() - 1;
+		String nextLine = "";
+		boolean foundBreakPoint = false;
+
+		while (!foundBreakPoint) {
+			char charToCheck = buffer.charAt(checkPlace);
+			if (charToCheck == ' ' || charToCheck == '-') {
+				foundBreakPoint = true;
+			} else {
+				if(--checkPlace <= 0) {
+					foundBreakPoint = true;
+					checkPlace = buffer.length() - 1;
+				}
+			}
+		}
+		nextLine = buffer.substring(checkPlace, buffer.length() - 1);
+		removeText(buffer.length() - checkPlace - 1);
+		advanceLine();
+		putText(nextLine);
 	}
 
 }
