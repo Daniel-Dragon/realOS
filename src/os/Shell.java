@@ -202,7 +202,11 @@ public class Shell {
 	public static ShellCommandFunction shellLoad = new ShellCommandFunction() {
 		@Override
 		public Object execute(ArrayList<String> input) {
-			if (java.util.regex.Pattern.compile("([0-9]*\\s*)*").matcher(String.join(" ", input)).matches())
+			String program = Globals.userProgramInput.getText();
+
+			if (program.isEmpty()) {
+				Globals.console.putText("No program found, please try again.");
+			} else if (java.util.regex.Pattern.compile("([0-9]*\\s*)*").matcher(program).matches())
 				Globals.console.putText("Valid program");
 			else
 				Globals.console.putText("Invalid program!");
