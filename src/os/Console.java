@@ -24,14 +24,11 @@ public class Console implements Input, Output{
 
 	@Override
 	public void putText(String string) {
-		if (!string.equals("")) {
-			if (needLineBreak(string))
-				advanceLine();
-			Globals.world.drawText(XPos, YPos, string);
-			int offset = Globals.world.measureText(XPos, string);
-			XPos += offset;
-		}
+		LinkedList<String> output = wrapText(string);
 
+		for (String line : output) {
+			writeText(line);
+		}
 	}
 
 	public void writeText(String string) {
@@ -46,6 +43,34 @@ public class Console implements Input, Output{
 
 	public LinkedList<String> wrapText(String string) {
 		LinkedList<String> output = new LinkedList();
+		int characterWidth = Globals.world.getCharacterWidth();
+		boolean foundSplitPoint = false;
+
+		while (string.length() > 0) {
+
+			if (string.length() <= characterWidth) {
+				output.add(string);
+				return output;
+			} else {
+				int checkingPoint = characterWidth - 1;
+
+				while (!foundSplitPoint) {
+					char charToCheck = string.charAt(checkingPoint);
+					if (charToCheck == ' ' || charToCheck == '-') {
+						foundSplitPoint = true;
+					} else {
+						if (--checkingPoint <= 0) {
+							//We go through without finding an appropriate split location we just split at the end.
+							checkingPoint = characterWidth;
+							foundSplitPoint = true;
+						}
+					}
+				}
+				output.add(string.substring(0, checkingPoint));
+				string = string.substring(checkingPoint + 1, string.length() - 1);
+				foundSplitPoint = false;
+			}
+		}
 
 
 		return output;
@@ -102,7 +127,7 @@ public class Console implements Input, Output{
 					removeText(1);
 				}
 			} else {
-				putText("" + next);
+				writeText("" + next);
 				buffer += next;
 			}
 		}
