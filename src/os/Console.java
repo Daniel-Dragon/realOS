@@ -24,14 +24,31 @@ public class Console implements Input, Output{
 
 	@Override
 	public void putText(String string) {
-		if(!string.equals("")) {
-//                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+		if (!string.equals("")) {
 			if (needLineBreak(string))
 				advanceLine();
-            Globals.world.drawText(XPos, YPos, string);
+			Globals.world.drawText(XPos, YPos, string);
 			int offset = Globals.world.measureText(XPos, string);
 			XPos += offset;
 		}
+
+	}
+
+	public void writeText(String string) {
+		if (!string.equals("")) {
+			if (needLineBreak(string))
+				advanceLine();
+			Globals.world.drawText(XPos, YPos, string);
+			int offset = Globals.world.measureText(XPos, string);
+			XPos += offset;
+		}
+	}
+
+	public LinkedList<String> wrapText(String string) {
+		LinkedList<String> output = new LinkedList();
+
+
+		return output;
 	}
 
 	@Override
@@ -109,6 +126,10 @@ public class Console implements Input, Output{
 	private boolean needLineBreak(String string) {
 	    return ((Globals.world.measureText(0, string) + XPos) > endXPos);
     }
+
+    private boolean needToShiftUp() {
+		return YPos == Globals.world.height();
+	}
 
     private void nextInputBuffer() {
 		if ((inputBuffer.size() > (inputBufferIndex + 1))) {
