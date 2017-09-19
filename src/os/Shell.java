@@ -24,13 +24,13 @@ public class Shell {
 		commandList.add(new ShellCommand(shellCls, "cls", "- Clears the screen and resets the cursor position."));
 		commandList.add(new ShellCommand(shellMan, "man", "<topic> - Displays the MANual page for <topic>."));
 		commandList.add(new ShellCommand(shellTrace, "trace", "<on | off> - Turns the OS trace on or off."));
-		commandList.add(new ShellCommand(shellDate, "date", "Displays the current date and time. Optional argument for format you wish to display the date in."));
-		commandList.add(new ShellCommand(shellWhereAmI, "whereami", "Displays your current location within the system."));
+		commandList.add(new ShellCommand(shellDate, "date", "- Displays the current date and time. Optional argument for format you wish to display the date in."));
+		commandList.add(new ShellCommand(shellWhereAmI, "whereami", "- Displays your current location within the system."));
 		commandList.add(new ShellCommand(shellRot13, "rot13", "<string | message> - Does rot13 obfuscation on <string>."));
 		commandList.add(new ShellCommand(shellStatus, "status", "<string | status> - Changes the system status message."));
 		commandList.add(new ShellCommand(shellBsod, "bsod", "<string | reason> - Brings up the BSOD with the reason given."));
-		commandList.add(new ShellCommand(shellLoad, "load", "Loads program into main memory."));
-		commandList.add(new ShellCommand(shellWhereAmI, "TEST", "This is going to be used to test line wrapping by using the help command and having this huge novel of a help command display on the screen and we will be able to see if it is breaking at the appropriate location or if it is just breaking at the end of the line"));
+		commandList.add(new ShellCommand(shellLoad, "load", "- Loads program into main memory."));
+		commandList.add(new ShellCommand(shellWhereAmI, "TEST", "- This is going to be used to test line wrapping by using the help command and having this huge novel of a help command display on the screen and we will be able to see if it is breaking at the appropriate location or if it is just breaking at the end of the line"));
 		
 	}
 	
