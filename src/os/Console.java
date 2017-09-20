@@ -83,7 +83,8 @@ public class Console implements Input, Output{
 	}
 
 	public void retreatLine() {
-		XPos = endXPos;
+		XPos = Globals.world.measureText(0, promptString + buffer);
+
 		YPos -= Globals.world.getLineHeight();
 	}
 
@@ -127,7 +128,7 @@ public class Console implements Input, Output{
 					removeText(1);
 				}
 			} else {
-				writeText("" + next);
+            	writeText("" + next);
 				buffer += next;
 			}
 		}
@@ -136,15 +137,17 @@ public class Console implements Input, Output{
 	private void removeText(int numChar) {
 
 		for (int i = 0; i < numChar; i++) {
-			if (XPos == 0)
-				retreatLine();
 			String currText = buffer.substring(buffer.length() - 1, buffer.length());
 			int xOffset = Globals.world.measureText(XPos, currText);
 			int yOffset = Globals.world.fontSize();
 			XPos -= xOffset;
 			Globals.world.clearRect(XPos, YPos - yOffset, xOffset, yOffset + Globals.world.fontDescent());
-
 			buffer = buffer.substring(0, buffer.length()-1);
+
+			if (XPos == 0) {
+				retreatLine();
+				removeText(1);
+			}
 		}
 	}
 
@@ -207,9 +210,10 @@ public class Console implements Input, Output{
 				}
 			}
 		}
-		nextLine = buffer.substring(checkPlace, buffer.length() - 1);
+		nextLine = buffer.substring(checkPlace, buffer.length());
 		removeText(buffer.length() - checkPlace - 1);
 		advanceLine();
+		buffer += nextLine;
 		putText(nextLine);
 	}
 
