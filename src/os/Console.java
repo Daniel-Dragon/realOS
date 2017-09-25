@@ -15,7 +15,6 @@ public class Console implements Input, Output{
 	}
 
 	public void init() {
-		// TODO Auto-generated method stub
 		clearScreen();
 		resetXY();
 		endXPos = Globals.world.getCharacterWidth() * Globals.world.measureText(0, "x");
@@ -26,8 +25,13 @@ public class Console implements Input, Output{
 	public void putText(String string) {
 		LinkedList<String> output = wrapText(string);
 
-		for (String line : output) {
-			writeText(line);
+		if (output.size() > 1) {
+			for (String line : output) {
+				writeText(line);
+				advanceLine();
+			}
+		} else if(output.size() == 1){
+			writeText(string);
 		}
 	}
 
