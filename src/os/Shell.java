@@ -30,7 +30,7 @@ public class Shell {
 		commandList.add(new ShellCommand(shellStatus, "status", "<string | status> - Changes the system status message."));
 		commandList.add(new ShellCommand(shellBsod, "bsod", "<string | reason> - Brings up the BSOD with the reason given."));
 		commandList.add(new ShellCommand(shellLoad, "load", "- Loads program into main memory."));
-		commandList.add(new ShellCommand(shellWhereAmI, "TEST", "- This is going to be used to test line wrapping by using the help command and having this huge novel of a help command display on the screen and we will be able to see if it is breaking at the appropriate location or if it is just breaking at the end of the line"));
+		commandList.add(new ShellCommand(shellTop, "top", "Shows status of processes on this machine."));
 		
 	}
 	
@@ -210,6 +210,18 @@ public class Shell {
 				Globals.console.putText("Valid program");
 			else
 				Globals.console.putText("Invalid program!");
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellTop = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> input) {
+			for (util.PCB process: Control.processes) {
+				process.processDetails();
+				Globals.console.advanceLine();
+			}
+
 			return null;
 		}
 	};

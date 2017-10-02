@@ -35,7 +35,7 @@ public class Console implements Input, Output{
 		}
 	}
 
-	public void writeText(String string) {
+	private void writeText(String string) {
 		if (!string.equals("")) {
 			if (needLineBreak(string))
 				inputLineBreak();

@@ -27,6 +27,11 @@ public class Globals {
 	 */
 	public static int OSclock = 0;
 	public static int mode = 0;
+
+	/*
+	 * Enum
+	 */
+	public enum ProcessState {NEW, READY, RUNNING, WAITING, TERMINATED};
 	
 	//we need variables that have to do with graphics.
 	
