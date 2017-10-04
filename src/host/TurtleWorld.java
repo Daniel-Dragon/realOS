@@ -26,8 +26,8 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private static final int MEM_WIDTH = 30;
 	private static final int MEM_MARGIN = 2;
 	private static final int MEM_HEADING = 15;
-	public static final int NUM_MEM_SEGMENT = 1;
-	public static final int SEGMENT_SIZE = 256;
+	public static final int NUM_MEM_SEGMENT = Globals.NUM_MEM_SEGMENT;
+	public static final int SEGMENT_SIZE = Globals.SEGMENT_SIZE;
 	private static final int MEM_TOTAL_HEIGHT = MEM_MARGIN * 2 + SEGMENT_SIZE + MEM_HEADING;
 	private int itsPictureTop = TOP;
 	private Image itsPicture;

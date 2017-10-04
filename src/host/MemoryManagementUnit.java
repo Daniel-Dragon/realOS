@@ -13,6 +13,7 @@ public class MemoryManagementUnit {
 
     private void allocate(int segment) {
         //Load the program into memory here
+
         freeSegment[segment] = false;
     }
 

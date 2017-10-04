@@ -1,5 +1,6 @@
 package util;
 
+import host.MemoryManagementUnit;
 import host.TurtleWorld;
 import os.*;
 
@@ -22,6 +23,10 @@ public class Globals {
     public static final String defaultDateFormat = "yyyy/MM/dd HH:mm:ss";
 	public static final String currentLocation = "You are here.";
 	public static final short asciiValM = 109;
+
+	public static final int SEGMENT_SIZE = 256;
+	public static final int NUM_MEM_SEGMENT = 1;
+
 	/**
 	 * Variables.
 	 */
@@ -47,6 +52,8 @@ public class Globals {
 	
 	public static Console console;
 	public static Shell osShell;
+
+	public static MemoryManagementUnit mmu = new MemoryManagementUnit();
 	
 	public static int hardwareClockID;
 	
