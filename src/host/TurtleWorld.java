@@ -22,11 +22,15 @@ import java.util.Date;
 
 public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private static final int EDGE = 13, TOP = 60;  // around the JFrame
+	private static final int MEM_WIDTH = 30;
+	private static final int MEM_MARGIN = 5;
 	private int itsPictureTop = TOP;
 	private Image itsPicture;
 	private Image buttonSpace;
+	private Image memPicture;
 	private Graphics itsPage;
 	private Graphics buttonPainter;
+	private Graphics memPage;
 	private FontMetrics itsMetrics;
 	private int width;
 	private int height;
@@ -35,13 +39,13 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private static final GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
 	public TurtleWorld (int width, int height)
-	{	super ("Trurl -- The Operating System");  // set the title for the frame
-		this.width = width;
+	{	super ("realOS -- The Operating System");  // set the title for the frame
+		this.width = width + MEM_WIDTH;
 		this.height = height;
 		addMouseListener(this);
 		createButtons();
 		setDefaultCloseOperation (EXIT_ON_CLOSE); // no WindowListener
-		setSize (width + 2 * EDGE, height + TOP + EDGE);
+		setSize (width + 2 * EDGE + MEM_WIDTH, height + TOP + EDGE);
 		toFront();  // put this frame in front of the BlueJ window
 		setVisible (true);  // cause a call to paint
         begin (width, height);
@@ -59,8 +63,14 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
 
 	public void begin (int width, int height)
-	{	itsPicture = new java.awt.image.BufferedImage (width, height, 
+	{	itsPicture = new java.awt.image.BufferedImage (width, height,
 			           java.awt.image.BufferedImage.TYPE_INT_RGB);
+		memPicture = new java.awt.image.BufferedImage (MEM_WIDTH, height - TOP,
+				java.awt.image.BufferedImage.TYPE_INT_RGB);
+		memPage = memPicture.getGraphics();
+		memPage.setColor(Color.magenta);
+		memPage.fillRect(0, 0, MEM_WIDTH, height-TOP);
+		memPage.clearRect(MEM_MARGIN, MEM_MARGIN, MEM_WIDTH - MEM_MARGIN * 2, height - TOP - MEM_MARGIN * 2);
 		initItsPage();
 		itsPage.fillRect (0, 30, width, height);
 		itsMetrics = itsPage.getFontMetrics();
@@ -83,6 +93,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	{	if (itsPicture != null)
 			g.drawImage (itsPicture, EDGE, itsPictureTop, this);
 			g.drawImage(buttonSpace, EDGE, TOP-30, width, 30, this);
+			g.drawImage(memPicture, width - MEM_WIDTH + EDGE, TOP, MEM_WIDTH, height, this);
 	}	//======================
 
 
@@ -256,7 +267,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	}
 
 	private boolean needToShiftUp(int YPos) {
-		return (YPos >= Globals.world.getConsoleHeight());
+		return (YPos > Globals.world.getConsoleHeight());
 	}
 
 	public void blueScreen(String reason) {
@@ -270,6 +281,10 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
     public int getCharacterWidth() {
 		return ((width - (EDGE * 2)) /measureText(0, "x"));
+	}
+
+	public void fillMemory(int location) {
+		memPage.fillRect(0, location + MEM_MARGIN, MEM_WIDTH, 1);
 	}
 
 }
