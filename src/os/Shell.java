@@ -1,6 +1,7 @@
 package os;
 
 import host.Control;
+import host.TurtleWorld;
 import jdk.nashorn.internal.objects.Global;
 import util.Globals;
 import util.Utils;
@@ -30,7 +31,8 @@ public class Shell {
 		commandList.add(new ShellCommand(shellStatus, "status", "<string | status> - Changes the system status message."));
 		commandList.add(new ShellCommand(shellBsod, "bsod", "<string | reason> - Brings up the BSOD with the reason given."));
 		commandList.add(new ShellCommand(shellLoad, "load", "- Loads program into main memory."));
-		commandList.add(new ShellCommand(shellTop, "top", "Shows status of processes on this machine."));
+		commandList.add(new ShellCommand(shellTop, "top", "- Shows status of processes on this machine."));
+		commandList.add(new ShellCommand(shellRamCheck, "ramcheck", "- Checks all ram."));
 		
 	}
 	
@@ -223,6 +225,24 @@ public class Shell {
 			}
 
 			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellRamCheck = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			if (in.size() == 2) {
+
+				try {
+					Globals.world.fillMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)));
+				} catch(Exception e) {
+					Globals.console.putText("Need a valid segment and location to check.");
+				}
+				return null;
+			} else {
+				Globals.console.putText("Need a valid segment and location to check.");
+				return null;
+			}
 		}
 	};
 

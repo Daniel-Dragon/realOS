@@ -16,6 +16,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import util.Globals.MemoryOperation;
 
 /** A TurtleWorld is a JFrame on which an Image object is drawn each time 
  *  the JFrame is repainted.  Each Turtle draws on that Image object. */
@@ -23,14 +24,18 @@ import java.util.Date;
 public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private static final int EDGE = 13, TOP = 60;  // around the JFrame
 	private static final int MEM_WIDTH = 30;
-	private static final int MEM_MARGIN = 5;
+	private static final int MEM_MARGIN = 2;
+	private static final int MEM_HEADING = 15;
+	public static final int NUM_MEM_SEGMENT = 1;
+	public static final int SEGMENT_SIZE = 256;
+	private static final int MEM_TOTAL_HEIGHT = MEM_MARGIN * 2 + SEGMENT_SIZE + MEM_HEADING;
 	private int itsPictureTop = TOP;
 	private Image itsPicture;
 	private Image buttonSpace;
-	private Image memPicture;
+	private Image[] memPicture = new Image[NUM_MEM_SEGMENT];
 	private Graphics itsPage;
 	private Graphics buttonPainter;
-	private Graphics memPage;
+	private Graphics[] memPage = new Graphics[NUM_MEM_SEGMENT];
 	private FontMetrics itsMetrics;
 	private int width;
 	private int height;
@@ -45,7 +50,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		addMouseListener(this);
 		createButtons();
 		setDefaultCloseOperation (EXIT_ON_CLOSE); // no WindowListener
-		setSize (width + 2 * EDGE + MEM_WIDTH, height + TOP + EDGE);
+		setSize (width + 2 * EDGE + MEM_WIDTH * NUM_MEM_SEGMENT, height + TOP + EDGE);
 		toFront();  // put this frame in front of the BlueJ window
 		setVisible (true);  // cause a call to paint
         begin (width, height);
@@ -53,7 +58,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	}	//======================
 
 	public void createButtons() {
-		buttonSpace = new java.awt.image.BufferedImage(width, 30, java.awt.image.BufferedImage.TYPE_INT_RGB);
+		buttonSpace = new java.awt.image.BufferedImage(width + MEM_WIDTH * NUM_MEM_SEGMENT, 30, java.awt.image.BufferedImage.TYPE_INT_RGB);
 		buttonPainter = buttonSpace.getGraphics();
 		drawStartButton(buttonPainter, true);
 		drawHaltButton(buttonPainter, false);
@@ -65,12 +70,16 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	public void begin (int width, int height)
 	{	itsPicture = new java.awt.image.BufferedImage (width, height,
 			           java.awt.image.BufferedImage.TYPE_INT_RGB);
-		memPicture = new java.awt.image.BufferedImage (MEM_WIDTH, height - TOP,
-				java.awt.image.BufferedImage.TYPE_INT_RGB);
-		memPage = memPicture.getGraphics();
-		memPage.setColor(Color.magenta);
-		memPage.fillRect(0, 0, MEM_WIDTH, height-TOP);
-		memPage.clearRect(MEM_MARGIN, MEM_MARGIN, MEM_WIDTH - MEM_MARGIN * 2, height - TOP - MEM_MARGIN * 2);
+	    for (int i = 0; i < NUM_MEM_SEGMENT; i++) {
+            memPicture[i] = new java.awt.image.BufferedImage (MEM_WIDTH, MEM_TOTAL_HEIGHT,
+                    java.awt.image.BufferedImage.TYPE_INT_RGB);
+            memPage[i] = memPicture[i].getGraphics();
+            memPage[i].setFont(new Font("monospaced", Font.PLAIN, 12));
+            memPage[i].setColor(Color.magenta);
+            memPage[i].fillRect(0, MEM_HEADING, MEM_WIDTH, SEGMENT_SIZE + (2 * MEM_MARGIN));
+            memPage[i].clearRect(MEM_MARGIN, MEM_MARGIN + MEM_HEADING, MEM_WIDTH - MEM_MARGIN * 2, SEGMENT_SIZE);
+        }
+
 		initItsPage();
 		itsPage.fillRect (0, 30, width, height);
 		itsMetrics = itsPage.getFontMetrics();
@@ -92,8 +101,13 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	public void paint (Graphics g)
 	{	if (itsPicture != null)
 			g.drawImage (itsPicture, EDGE, itsPictureTop, this);
-			g.drawImage(buttonSpace, EDGE, TOP-30, width, 30, this);
-			g.drawImage(memPicture, width - MEM_WIDTH + EDGE, TOP, MEM_WIDTH, height, this);
+			g.drawImage(buttonSpace, EDGE, TOP-30, width + MEM_WIDTH * NUM_MEM_SEGMENT, 30, this);
+
+        if (memPicture != null) {
+            for (int i = 0; i < NUM_MEM_SEGMENT; i++) {
+                g.drawImage(memPicture[i], width - MEM_WIDTH + EDGE + (i * MEM_WIDTH), TOP, MEM_WIDTH, height, this);
+            }
+        }
 	}	//======================
 
 
@@ -174,7 +188,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	public void message()
 	{
 		buttonPainter.setColor(Color.black);
-		buttonPainter.fillRect(165, 0, width - 165, 30);  //just clear the whole thing!
+		buttonPainter.fillRect(165, 0, width - 165 + MEM_WIDTH * NUM_MEM_SEGMENT, 30);  //just clear the whole thing!
 		buttonPainter.setColor(Color.white);
 		Date currDate = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Globals.defaultDateFormat);
@@ -283,9 +297,66 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		return ((width - (EDGE * 2)) /measureText(0, "x"));
 	}
 
-	public void fillMemory(int location) {
-		memPage.fillRect(0, location + MEM_MARGIN, MEM_WIDTH, 1);
+	public void drawMemory(MemoryOperation operation, int segment, int location) {
+	    //0 index.
+	    --segment;
+	    --location;
+
+        if (operation == MemoryOperation.CLEAR) {
+            //clear segment given.
+        }
+        else {
+            memPage[segment].setColor(Color.MAGENTA);
+            memPage[segment].fillRect(MEM_MARGIN, location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH - MEM_MARGIN, 1);
+            setMemoryColor(memPage[segment], operation);
+            memPage[segment].drawString(String.valueOf(location), 0, MEM_HEADING);
+        }
+    }
+    private void setMemoryColor(Graphics memPage, MemoryOperation operation) {
+          switch(operation) {
+              case WRITE:
+                  memPage.setColor(Color.RED);
+                  break;
+              case READ:
+                  memPage.setColor(Color.BLUE);
+                  break;
+              case CLEAR:
+                  memPage.setColor(Color.BLUE);
+                  break;
+              default:
+                  //Something went wrong if we're here.
+                  memPage.setColor(Color.MAGENTA);
+          }
+    }
+	public void fillMemory(int segment, int location) {
+        --segment;
+        memPage[segment].setColor(Color.MAGENTA);
+		memPage[segment].fillRect(0, --location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH, 1);
+		interactWithMemory(++segment, location, MemoryOperation.WRITE);
 	}
+
+	public void interactWithMemory(int segment, int location, MemoryOperation operation) {
+	    segment--;
+	    memPage[segment].setColor(Color.BLACK);
+	    memPage[segment].fillRect(0, 0, MEM_WIDTH, MEM_HEADING);
+        int headingX = 0;
+        int headingY = MEM_HEADING;
+
+	    switch(operation) {
+            case READ:
+                memPage[segment].setColor(Color.BLUE);
+                memPage[segment].drawString(String.valueOf(location), headingX, headingY);
+                break;
+            case WRITE:
+                memPage[segment].setColor(Color.RED);
+                memPage[segment].drawString(String.valueOf(location), headingX, headingY);
+                break;
+            default:
+                //Something went wrong.
+        }
+
+        repaint();
+    }
 
 }
 // </pre>

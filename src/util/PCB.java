@@ -20,7 +20,8 @@ public class PCB {
     public PCB() {
         this.processState = ProcessState.NEW;
         this.pid = pidCounter++;
-        programCounter = 0; //Initialize to 0?
+        programCounter = 0;
+        accountingInformation = 0;
     }
 
     public void stateSave() {
@@ -31,6 +32,10 @@ public class PCB {
     public void stateRestore() {
         processState = ProcessState.RUNNING;
         //Restore CPU Registers
+    }
+
+    public void process() {
+        accountingInformation++;
     }
 
     public void processDetails() {

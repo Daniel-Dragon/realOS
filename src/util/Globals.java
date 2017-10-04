@@ -32,7 +32,8 @@ public class Globals {
 	 * Enum
 	 */
 	public enum ProcessState {NEW, READY, RUNNING, WAITING, TERMINATED};
-	
+	public enum MemoryOperation {READ, WRITE, CLEAR};
+
 	//we need variables that have to do with graphics.
 	
 	public static boolean trace = true;
