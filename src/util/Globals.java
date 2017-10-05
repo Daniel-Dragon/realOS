@@ -1,6 +1,5 @@
 package util;
 
-import host.MemoryManagementUnit;
 import host.TurtleWorld;
 import os.*;
 
@@ -25,7 +24,7 @@ public class Globals {
 	public static final short asciiValM = 109;
 
 	public static final int SEGMENT_SIZE = 256;
-	public static final int NUM_MEM_SEGMENT = 1;
+	public static final int NUM_MEM_SEGMENT = 3;
 
 	/**
 	 * Variables.
@@ -54,6 +53,7 @@ public class Globals {
 	public static Shell osShell;
 
 	public static MemoryManagementUnit mmu = new MemoryManagementUnit();
+	public static ProcessManager processManager = new ProcessManager();
 	
 	public static int hardwareClockID;
 	

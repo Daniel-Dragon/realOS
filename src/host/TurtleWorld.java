@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import util.Globals.MemoryOperation;
+import util.PCB;
 
 /** A TurtleWorld is a JFrame on which an Image object is drawn each time 
  *  the JFrame is repainted.  Each Turtle draws on that Image object. */
@@ -29,13 +30,19 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	public static final int NUM_MEM_SEGMENT = Globals.NUM_MEM_SEGMENT;
 	public static final int SEGMENT_SIZE = Globals.SEGMENT_SIZE;
 	private static final int MEM_TOTAL_HEIGHT = MEM_MARGIN * 2 + SEGMENT_SIZE + MEM_HEADING;
+	private static final int DISPLAY_HEIGHT = 100;
+	private static final int DISPLAY_WIDTH = 200;
+	private static final int DISPLAY_MARGIN = 2;
 	private int itsPictureTop = TOP;
 	private Image itsPicture;
 	private Image buttonSpace;
 	private Image[] memPicture = new Image[NUM_MEM_SEGMENT];
+	private Image dispPicture;
 	private Graphics itsPage;
 	private Graphics buttonPainter;
 	private Graphics[] memPage = new Graphics[NUM_MEM_SEGMENT];
+	private Graphics dispPage;
+	private PCB currentPCB = null;
 	private FontMetrics itsMetrics;
 	private int width;
 	private int height;
@@ -50,7 +57,9 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		addMouseListener(this);
 		createButtons();
 		setDefaultCloseOperation (EXIT_ON_CLOSE); // no WindowListener
-		setSize (width + 2 * EDGE + MEM_WIDTH * NUM_MEM_SEGMENT, height + TOP + EDGE);
+		int widthOffset;
+		widthOffset = ((MEM_WIDTH * NUM_MEM_SEGMENT) > (DISPLAY_WIDTH)) ? (MEM_WIDTH * NUM_MEM_SEGMENT) : DISPLAY_WIDTH;
+		setSize (width + 2 * EDGE + widthOffset, height + TOP + EDGE + DISPLAY_HEIGHT);
 		toFront();  // put this frame in front of the BlueJ window
 		setVisible (true);  // cause a call to paint
         begin (width, height);
@@ -78,6 +87,11 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
             memPage[i].setColor(Color.magenta);
             memPage[i].fillRect(0, MEM_HEADING, MEM_WIDTH, SEGMENT_SIZE + (2 * MEM_MARGIN));
             memPage[i].clearRect(MEM_MARGIN, MEM_MARGIN + MEM_HEADING, MEM_WIDTH - MEM_MARGIN * 2, SEGMENT_SIZE);
+
+            dispPicture = new java.awt.image.BufferedImage (DISPLAY_WIDTH, DISPLAY_HEIGHT,
+					java.awt.image.BufferedImage.TYPE_INT_RGB);
+            dispPage = dispPicture.getGraphics();
+            dispPage.setFont(new Font("monospaced", Font.PLAIN, 12));
         }
 
 		initItsPage();
@@ -101,13 +115,17 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	public void paint (Graphics g)
 	{	if (itsPicture != null)
 			g.drawImage (itsPicture, EDGE, itsPictureTop, this);
-			g.drawImage(buttonSpace, EDGE, TOP-30, width + MEM_WIDTH * NUM_MEM_SEGMENT, 30, this);
+			g.drawImage(buttonSpace, EDGE, TOP-30, width - MEM_WIDTH , 30, this);
 
         if (memPicture != null) {
             for (int i = 0; i < NUM_MEM_SEGMENT; i++) {
-                g.drawImage(memPicture[i], width - MEM_WIDTH + EDGE + (i * MEM_WIDTH), TOP, MEM_WIDTH, height, this);
+                g.drawImage(memPicture[i], width - MEM_WIDTH + EDGE + (i * MEM_WIDTH), TOP - 30 + DISPLAY_HEIGHT, MEM_WIDTH, height, this);
             }
         }
+
+        if (dispPicture != null) {
+        	g.drawImage(dispPicture, width - MEM_WIDTH + EDGE, TOP-30, DISPLAY_WIDTH, DISPLAY_HEIGHT, this);
+		}
 	}	//======================
 
 
@@ -194,6 +212,24 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Globals.defaultDateFormat);
 		String drawString = dateFormat.format(currDate) + " " + getCurrMessage();
 		buttonPainter.drawString(drawString, 165, 22);
+
+		if (dispPage != null && currentPCB != null) {
+			dispPage.setColor(Color.WHITE);
+			dispPage.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+			dispPage.clearRect(DISPLAY_MARGIN, DISPLAY_MARGIN, DISPLAY_WIDTH - 2 * DISPLAY_MARGIN, DISPLAY_HEIGHT - 2 * DISPLAY_MARGIN);
+
+			//dispPage.setColor(Color.BLACK);
+			//dispPage.fillRect(DISPLAY_MARGIN, DISPLAY_MARGIN, DISPLAY_WIDTH - DISPLAY_MARGIN, DISPLAY_HEIGHT - DISPLAY_MARGIN);
+			//dispPage.setColor(Color.WHITE);
+			//Current Instruction, Stack Limit, Current Program Counter Value, Process State, Current Stack Pointer, PID of Process.
+			dispPage.drawString("Instruction: " + currentPCB.currentInstruction,  DISPLAY_MARGIN, 12 + DISPLAY_MARGIN);
+			dispPage.drawString("SL: " + currentPCB.stackLimit,  DISPLAY_MARGIN, 24 + DISPLAY_MARGIN);
+			dispPage.drawString("CV: " + currentPCB.programCounter,  DISPLAY_MARGIN, 36 + DISPLAY_MARGIN);
+			dispPage.drawString("State: " + currentPCB.getprocessState(),  DISPLAY_MARGIN, 48 + DISPLAY_MARGIN);
+			dispPage.drawString("SP: " + currentPCB.stackPointer,  DISPLAY_MARGIN, 60 + DISPLAY_MARGIN);
+			dispPage.drawString("PID: " + currentPCB.pid, DISPLAY_MARGIN, 72 + DISPLAY_MARGIN);
+		}
+
 	}
 
 	public String getCurrMessage() {
@@ -357,6 +393,10 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
         repaint();
     }
+
+    public void displayPCB(util.PCB process) {
+		//dispPage.drawString(0, 0, "");
+	}
 
 }
 // </pre>

@@ -8,9 +8,13 @@ public class PCB {
     //Private members
     private static int pidCounter = 0;
 
-    private ProcessState processState;
-    private int pid;
-    private int programCounter;
+    public ProcessState processState;
+    public int currentInstruction;
+    public int pid;
+    public int programCounter;
+    public int stackLimit;
+    public int stackPointer;
+
     //cpu registers
     //cpu schedule information
     //memory management information
@@ -24,14 +28,22 @@ public class PCB {
         accountingInformation = 0;
     }
 
+    public PCB(int[] program) {
+        this();
+        currentInstruction = program[0];
+        stackLimit = program.length;
+        stackPointer = Globals.SEGMENT_SIZE - 1;
+
+    }
+
     public void stateSave() {
         processState = ProcessState.READY;
-        //Save CPU Registers
+        //Save CPU Registers?
     }
 
     public void stateRestore() {
         processState = ProcessState.RUNNING;
-        //Restore CPU Registers
+        //Restore CPU Registers?
     }
 
     public void process() {
@@ -39,12 +51,17 @@ public class PCB {
     }
 
     public void processDetails() {
-        Globals.console.putText("Process State: " + getprocessState(processState));
+        Globals.console.putText("Process State: " + getprocessState());
         Globals.console.putText(" PID: " + pid);
         Globals.console.putText(" Program Counter: " + programCounter);
     }
 
-    private static String getprocessState(ProcessState processIn) {
+    public void setProcessState(ProcessState processState) {
+        this.processState = processState;
+    }
+
+    public String getprocessState() {
+        ProcessState processIn = processState;
         switch(processIn) {
             case NEW:
                 return "NEW";

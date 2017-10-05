@@ -208,8 +208,13 @@ public class Shell {
 
 			if (program.isEmpty()) {
 				Globals.console.putText("No program found, please try again.");
-			} else if (java.util.regex.Pattern.compile("([0-9]*\\s*)*").matcher(program).matches())
-				Globals.console.putText("Valid program");
+			} else if (java.util.regex.Pattern.compile("([0-9]*\\s*)*").matcher(program).matches()) {
+				int[] intArr = new int[input.size()];
+				for (int i = 0; i < input.size(); i++) {
+					intArr[i] = Integer.parseInt(input.get(i));
+				}
+				Globals.mmu.load(intArr);
+			}
 			else
 				Globals.console.putText("Invalid program!");
 			return null;
