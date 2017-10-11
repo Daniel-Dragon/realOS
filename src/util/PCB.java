@@ -14,6 +14,7 @@ public class PCB {
     public int programCounter;
     public int stackLimit;
     public int stackPointer;
+    public int segment;
 
     //cpu registers
     //cpu schedule information
@@ -28,12 +29,12 @@ public class PCB {
         accountingInformation = 0;
     }
 
-    public PCB(int[] program) {
+    public PCB(int[] program, int segment) {
         this();
         currentInstruction = program[0];
         stackLimit = program.length;
         stackPointer = Globals.SEGMENT_SIZE - 1;
-
+        segment = segment;
     }
 
     public void stateSave() {

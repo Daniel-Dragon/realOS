@@ -333,43 +333,43 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		return ((width - (EDGE * 2)) /measureText(0, "x"));
 	}
 
-	public void drawMemory(MemoryOperation operation, int segment, int location) {
-	    //0 index.
-	    --segment;
-	    --location;
-
-        if (operation == MemoryOperation.CLEAR) {
-            //clear segment given.
-        }
-        else {
-            memPage[segment].setColor(Color.MAGENTA);
-            memPage[segment].fillRect(MEM_MARGIN, location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH - MEM_MARGIN, 1);
-            setMemoryColor(memPage[segment], operation);
-            memPage[segment].drawString(String.valueOf(location), 0, MEM_HEADING);
-        }
-    }
-    private void setMemoryColor(Graphics memPage, MemoryOperation operation) {
-          switch(operation) {
-              case WRITE:
-                  memPage.setColor(Color.RED);
-                  break;
-              case READ:
-                  memPage.setColor(Color.BLUE);
-                  break;
-              case CLEAR:
-                  memPage.setColor(Color.BLUE);
-                  break;
-              default:
-                  //Something went wrong if we're here.
-                  memPage.setColor(Color.MAGENTA);
-          }
-    }
-	public void fillMemory(int segment, int location) {
-        --segment;
-        memPage[segment].setColor(Color.MAGENTA);
-		memPage[segment].fillRect(0, --location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH, 1);
-		interactWithMemory(++segment, location, MemoryOperation.WRITE);
-	}
+//	public void drawMemory(MemoryOperation operation, int segment, int location) {
+//	    //0 index.
+//	    --segment;
+//	    --location;
+//
+//        if (operation == MemoryOperation.CLEAR) {
+//            //clear segment given.
+//        }
+//        else {
+//            memPage[segment].setColor(Color.MAGENTA);
+//            memPage[segment].fillRect(MEM_MARGIN, location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH - MEM_MARGIN, 1);
+//            setMemoryColor(memPage[segment], operation);
+//            memPage[segment].drawString(String.valueOf(location), 0, MEM_HEADING);
+//        }
+//    }
+//    private void setMemoryColor(Graphics memPage, MemoryOperation operation) {
+//          switch(operation) {
+//              case WRITE:
+//                  memPage.setColor(Color.RED);
+//                  break;
+//              case READ:
+//                  memPage.setColor(Color.BLUE);
+//                  break;
+//              case CLEAR:
+//                  memPage.setColor(Color.BLUE);
+//                  break;
+//              default:
+//                  //Something went wrong if we're here.
+//                  memPage.setColor(Color.MAGENTA);
+//          }
+//    }
+//	public void fillMemory(int segment, int location) {
+//        --segment;
+//        memPage[segment].setColor(Color.MAGENTA);
+//		memPage[segment].fillRect(0, --location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH, 1);
+//		interactWithMemory(++segment, location, MemoryOperation.WRITE);
+//	}
 
 	public void interactWithMemory(int segment, int location, MemoryOperation operation) {
 	    segment--;
@@ -391,11 +391,17 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
                 //Something went wrong.
         }
 
+		memPage[segment].fillRect(0, --location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH, 1);
+
         repaint();
     }
 
     public void displayPCB(util.PCB process) {
-		//dispPage.drawString(0, 0, "");
+		currentPCB = process;
+	}
+
+	public void clearPCB() {
+		currentPCB = null;
 	}
 
 }

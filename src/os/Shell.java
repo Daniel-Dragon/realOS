@@ -239,7 +239,8 @@ public class Shell {
 			if (in.size() == 2) {
 
 				try {
-					Globals.world.fillMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)));
+					Globals.world.interactWithMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)), Globals.MemoryOperation.WRITE);
+					//Globals.world.fillMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)));
 				} catch(Exception e) {
 					Globals.console.putText("Need a valid segment and location to check.");
 				}

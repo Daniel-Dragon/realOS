@@ -13,6 +13,7 @@ public class Devices extends java.awt.event.KeyAdapter{
 	public void hostClockPulse() {
 		Globals.OSclock++;
 		Control.kernel.kernelOnCPUClockPulse();
+		Globals.processManager.jobScheduler();
 	}
 
 	@Override

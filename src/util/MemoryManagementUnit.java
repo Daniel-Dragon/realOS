@@ -11,28 +11,54 @@ public class MemoryManagementUnit {
 
     private boolean[] freeSegment;
     private Memory[] memory;
+    private int[] top;
 
     public MemoryManagementUnit() {
         freeSegment = new boolean[Globals.world.NUM_MEM_SEGMENT];
         Arrays.fill(freeSegment, true);
+
+        top = new int[Globals.world.NUM_MEM_SEGMENT];
+        Arrays.fill(top, Globals.SEGMENT_SIZE);
+
         memory = new Memory[Globals.world.NUM_MEM_SEGMENT];
     }
 
-    public void load(int[] program) {
+    public PCB load(int[] program) {
         int nextSegment = findNextFreeSegment();
-
         if (nextSegment >= 0) {
             allocate(nextSegment);
             for (int i = 0; i < program.length; i++) {
 
                 memory[nextSegment].set(i, program[i]);
-                Globals.world.drawMemory(MemoryOperation.WRITE, nextSegment, i);
+                Globals.world.interactWithMemory(nextSegment, i, MemoryOperation.WRITE);
             }
+            return new PCB(program, nextSegment);
         }
+
+        //Don't think we want this to happen...
+        return new PCB();
     }
 
     public void unload(int segment) {
         //TODO unload all from the segment
+    }
+
+    public int read(int segment, int location) {
+        Globals.world.interactWithMemory(segment, location, MemoryOperation.READ);
+        return memory[segment].get(location);
+    }
+
+    public void push(int segment, int value) {
+        Globals.world.interactWithMemory(segment, top[segment], MemoryOperation.WRITE);
+        memory[segment].set(--top[segment], value);
+    }
+
+    public int pop(int segment) {
+        Globals.world.interactWithMemory(segment, top[segment], MemoryOperation.READ);
+        int value = memory[segment].get(top[segment]);
+        top[segment]++;
+
+        return value;
     }
 
     private void allocate(int segment) {
@@ -45,7 +71,7 @@ public class MemoryManagementUnit {
         freeSegment[segment] = false;
     }
 
-    private int findNextFreeSegment() {
+    public int findNextFreeSegment() {
         for (int i = 0; i < Globals.world.NUM_MEM_SEGMENT; i++) {
             if (isSegmentFree(i))
                 return i;
