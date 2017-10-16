@@ -69,19 +69,4 @@ public class ProcessManager {
     public String[] top() {
         return residentList.top();
     }
-
-    public void jobScheduler() {
-        //TODO Something with this?
-//        if (!host.Control.cpu.isExecuting()) {
-//            if (!readyQueue.isEmpty()) {
-//                host.Control.cpu.loadProgram(readyQueue.remove());
-//            }
-//            else {
-//                //Do nothing, there is nothing to execute.
-//            }
-//        } else {
-//            //Something is already running.
-//            host.Control.cpu.executeProgram();
-//        }
-    }
 }

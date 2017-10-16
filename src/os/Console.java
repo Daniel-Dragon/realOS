@@ -178,12 +178,26 @@ public class Console implements Input, Output{
 
 	private void tabComplete() {
 		if (!buffer.isEmpty()) {
-            for (String input: inputBuffer) {
-                if (input.startsWith(buffer)) {
-                    setPromptString(input);
-                    break;
-                }
-            }
+			String[] commands = Globals.osShell.getShellCommands();
+			String matchingCommand = "";
+
+			for (String command : commands) {
+				if (command.startsWith(buffer)) {
+					if (matchingCommand == "") {
+						matchingCommand = command;
+					}
+					else {
+						matchingCommand = "";
+						break;
+					}
+				}
+			}
+
+			if (matchingCommand != "") {
+				removeText(buffer.length());
+				buffer = matchingCommand;
+				writeText(matchingCommand);
+			}
 		}
 	}
 

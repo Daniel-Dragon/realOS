@@ -36,7 +36,6 @@ public class Shell {
 		commandList.add(new ShellCommand(shellLoad, "load", "- Loads program into main memory."));
 		commandList.add(new ShellCommand(shellRun, "run", "- <int pid> runs process with given pid if available."));
 		commandList.add(new ShellCommand(shellTop, "top", "- Shows status of processes on this machine."));
-		commandList.add(new ShellCommand(shellRamCheck, "ramcheck", "- Checks all ram."));
 		
 	}
 	
@@ -248,25 +247,6 @@ public class Shell {
 		}
 	};
 
-	public static ShellCommandFunction shellRamCheck = new ShellCommandFunction() {
-		@Override
-		public Object execute(ArrayList<String> in) {
-			if (in.size() == 2) {
-
-				try {
-					Globals.world.interactWithMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)), 1, Globals.MemoryOperation.WRITE);
-					//Globals.world.fillMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)));
-				} catch(Exception e) {
-					Globals.console.putText("Need a valid segment and location to check.");
-				}
-				return null;
-			} else {
-				Globals.console.putText("Need a valid segment and location to check.");
-				return null;
-			}
-		}
-	};
-
 	public static ShellCommandFunction shellRun = new ShellCommandFunction() {
 		@Override
 		public Object execute(ArrayList<String> in) {
@@ -324,5 +304,15 @@ public class Shell {
 			}
 		}
 		return retVal;
+	}
+
+	public String[] getShellCommands() {
+		String[] commands = new String[commandList.size()];
+
+		for (int i = 0; i < commandList.size(); i++) {
+			commands[i] = commandList.get(i).getCommand();
+		}
+
+		return commands;
 	}
 }

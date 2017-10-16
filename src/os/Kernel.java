@@ -76,7 +76,6 @@ public class Kernel {
 				Globals.standardIn.handleInput();
 				break;
 			case Globals.PROCESS_IRQ:
-				//TODO manage interrupt. Insert into residentList.
 				Globals.processManager.beginExecuting(Integer.parseInt(params.get("pid")));
 				break;
 			case Globals.HALT_IRQ:
