@@ -75,6 +75,13 @@ public class Kernel {
 				Globals.kernelKeyboardDriver.isr(params);
 				Globals.standardIn.handleInput();
 				break;
+			case Globals.PROCESS_IRQ:
+				//TODO manage interrupt. Insert into residentList.
+				Globals.processManager.beginExecuting(Integer.parseInt(params.get("pid")));
+				break;
+			case Globals.HALT_IRQ:
+				Globals.processManager.haltProgram(Integer.parseInt(params.get("pid")), Integer.parseInt(params.get("statusCode")));
+				break;
 			default:
 				kernelTrapError("Invalid Interrupt Request. irq: " + irq + " params: " + params);
 		}

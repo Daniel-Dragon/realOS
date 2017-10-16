@@ -23,18 +23,20 @@ public class PCB {
     //I/o status information
 
     public PCB() {
-        this.processState = ProcessState.NEW;
-        this.pid = pidCounter++;
+        this.processState = ProcessState.TERMINATED;
+        this.pid = -1;
         programCounter = 0;
         accountingInformation = 0;
+        currentInstruction = 0;
     }
 
     public PCB(int[] program, int segment) {
         this();
-        currentInstruction = program[0];
+        this.pid = pidCounter++;
+        this.processState = ProcessState.NEW;
         stackLimit = program.length;
         stackPointer = Globals.SEGMENT_SIZE - 1;
-        segment = segment;
+        this.segment = segment;
     }
 
     public void stateSave() {

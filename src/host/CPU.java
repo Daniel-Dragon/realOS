@@ -1,5 +1,8 @@
 package host;
 
+import java.util.HashMap;
+
+import os.Interrupt;
 import util.PCB;
 import util.Globals;
 
@@ -13,6 +16,12 @@ public class CPU {
 	
 	public void cycle() {
 		Control.kernel.kernelTrace("CPU Cycle");
+		try {
+			executeProgram();
+		} catch (Exception e) {
+			System.out.println("Uncaught exception: " + e.getMessage());
+			halt(1);
+		}
 	}
 
 	public boolean isExecuting() {
@@ -23,10 +32,11 @@ public class CPU {
 		currentProcess = processIn;
 	}
 
-	public void executeProgram() {
-		//instruction = _memoryManager.read(PCB, this.PC);
-		int instruction = Globals.mmu.read(currentProcess.segment, currentProcess.currentInstruction);
+	public void haltProgram() { currentProcess = null; }
 
+	public void executeProgram() {
+		int instruction = Globals.mmu.read(currentProcess.segment, currentProcess.currentInstruction);
+		currentProcess.processState = Globals.ProcessState.RUNNING;
 		switch(instruction) {
 			case 0:
 				//Jump
@@ -85,6 +95,7 @@ public class CPU {
 				stLoc();
 				break;
 			case 15:
+				//Halt commands, does cleanup then frees up CPU.
 				halt(0);
 				break;
 			default:
@@ -123,14 +134,20 @@ public class CPU {
 			case 1:
 				//print top value of stack as int
 				Globals.console.putText(String.valueOf(Globals.mmu.pop(currentProcess.segment)));
+
 				break;
 			case 2:
 				//print top value of stack as char
+				char currChar = (char)Globals.mmu.pop(currentProcess.segment);
+				if (currChar == '\n')
+					Globals.console.advanceLine();
+				else
+					Globals.console.putText(String.valueOf(currChar));
 				Globals.console.putText(String.valueOf((char)Globals.mmu.pop(currentProcess.segment)));
 				break;
 			case 3:
 				//prints new line character
-				Globals.console.putText("\n");
+				Globals.console.advanceLine();
 				break;
 			case 4:
 				//readline, don't implement
@@ -206,6 +223,9 @@ public class CPU {
 		int numDown = Globals.mmu.pop(currentProcess.segment);
 		int val = Globals.mmu.pop(currentProcess.segment);
 
+		if (numDown > getStackSize()) {
+			//Globals.osShell.shellBsod.execute()
+		}
 		int[] tempStorage = new int[numDown];
 
 		for (int i = 0; i < numDown; i++)
@@ -226,18 +246,33 @@ public class CPU {
 	}
 
 	private void stLoc() {
-		//TODO should this work throughout all memory or JUST program memory again?
+		int value = Globals.mmu.pop(currentProcess.segment);
+		int location = Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction);
+		if (location < 0)
+			location += currentProcess.stackLimit;
+
+		Globals.mmu.write(currentProcess.segment, location, value);
 
 		currentProcess.currentInstruction++;
 	}
 
 	private void halt(int statusCode) {
+		HashMap<String, String> event = new HashMap<String, String>();
+		event.put("statusCode", String.valueOf(statusCode));
+		event.put("pid", String.valueOf(currentProcess.pid));
+		Globals.kernelInterruptQueue.add(new Interrupt(Globals.HALT_IRQ, event));
+
 		System.out.println("Program PID: " + currentProcess.pid + " has exited with code " + statusCode);
 		if (statusCode != 0) {
-			Globals.console.putText("An error has occured and process " + currentProcess.pid + " has exited(" + statusCode + ")");
+			Globals.standardOut.putText("An error has occurred and process " + currentProcess.pid + " has exited(" + statusCode + ")");
+			Globals.standardOut.advanceLine();
 		}
 
-		//TODO clear memory segment now?
+		currentProcess.processState = Globals.ProcessState.TERMINATED;
 		currentProcess = null;
+	}
+
+	private int getStackSize() {
+		return (Globals.SEGMENT_SIZE - currentProcess.stackLimit);
 	}
 }

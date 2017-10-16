@@ -26,11 +26,11 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private static final int EDGE = 13, TOP = 60;  // around the JFrame
 	private static final int MEM_WIDTH = 30;
 	private static final int MEM_MARGIN = 2;
-	private static final int MEM_HEADING = 15;
+	private static final int MEM_HEADING = 10;
 	public static final int NUM_MEM_SEGMENT = Globals.NUM_MEM_SEGMENT;
 	public static final int SEGMENT_SIZE = Globals.SEGMENT_SIZE;
 	private static final int MEM_TOTAL_HEIGHT = MEM_MARGIN * 2 + SEGMENT_SIZE + MEM_HEADING;
-	private static final int DISPLAY_HEIGHT = 100;
+	private static final int DISPLAY_HEIGHT = 80;
 	private static final int DISPLAY_WIDTH = 200;
 	private static final int DISPLAY_MARGIN = 2;
 	private int itsPictureTop = TOP;
@@ -88,11 +88,12 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
             memPage[i].fillRect(0, MEM_HEADING, MEM_WIDTH, SEGMENT_SIZE + (2 * MEM_MARGIN));
             memPage[i].clearRect(MEM_MARGIN, MEM_MARGIN + MEM_HEADING, MEM_WIDTH - MEM_MARGIN * 2, SEGMENT_SIZE);
 
-            dispPicture = new java.awt.image.BufferedImage (DISPLAY_WIDTH, DISPLAY_HEIGHT,
-					java.awt.image.BufferedImage.TYPE_INT_RGB);
-            dispPage = dispPicture.getGraphics();
-            dispPage.setFont(new Font("monospaced", Font.PLAIN, 12));
         }
+
+		dispPicture = new java.awt.image.BufferedImage (DISPLAY_WIDTH, DISPLAY_HEIGHT,
+				java.awt.image.BufferedImage.TYPE_INT_RGB);
+		dispPage = dispPicture.getGraphics();
+		dispPage.setFont(new Font("monospaced", Font.PLAIN, 10));
 
 		initItsPage();
 		itsPage.fillRect (0, 30, width, height);
@@ -102,8 +103,8 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
 	private void initItsPage() {
 		itsPage = itsPicture.getGraphics();
-		itsPage.setColor (Color.black);
-		itsPage.setColor (Color.white);
+		itsPage.setColor (Color.BLACK);
+		itsPage.setColor (Color.WHITE);
 		itsPage.setFont(new Font("monospaced", Font.PLAIN, 12));  //monospaced is easy to read and deal with...
 	}
 
@@ -113,18 +114,22 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
 
 	public void paint (Graphics g)
-	{	if (itsPicture != null)
+	{
+//		g.setColor(Color.BLACK);
+//		g.fillRect(0, 0, width, height);
+		if (itsPicture != null) {
 			g.drawImage (itsPicture, EDGE, itsPictureTop, this);
 			g.drawImage(buttonSpace, EDGE, TOP-30, width - MEM_WIDTH , 30, this);
+		}
 
         if (memPicture != null) {
             for (int i = 0; i < NUM_MEM_SEGMENT; i++) {
-                g.drawImage(memPicture[i], width - MEM_WIDTH + EDGE + (i * MEM_WIDTH), TOP - 30 + DISPLAY_HEIGHT, MEM_WIDTH, height, this);
+                g.drawImage(memPicture[i], width + (i * MEM_WIDTH) - 17, TOP - 30 + DISPLAY_HEIGHT, MEM_WIDTH, height, this);
             }
         }
 
         if (dispPicture != null) {
-        	g.drawImage(dispPicture, width - MEM_WIDTH + EDGE, TOP-30, DISPLAY_WIDTH, DISPLAY_HEIGHT, this);
+        	g.drawImage(dispPicture, width - 17, TOP-30, DISPLAY_WIDTH, DISPLAY_HEIGHT, this);
 		}
 	}	//======================
 
@@ -222,12 +227,13 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 			//dispPage.fillRect(DISPLAY_MARGIN, DISPLAY_MARGIN, DISPLAY_WIDTH - DISPLAY_MARGIN, DISPLAY_HEIGHT - DISPLAY_MARGIN);
 			//dispPage.setColor(Color.WHITE);
 			//Current Instruction, Stack Limit, Current Program Counter Value, Process State, Current Stack Pointer, PID of Process.
-			dispPage.drawString("Instruction: " + currentPCB.currentInstruction,  DISPLAY_MARGIN, 12 + DISPLAY_MARGIN);
-			dispPage.drawString("SL: " + currentPCB.stackLimit,  DISPLAY_MARGIN, 24 + DISPLAY_MARGIN);
-			dispPage.drawString("CV: " + currentPCB.programCounter,  DISPLAY_MARGIN, 36 + DISPLAY_MARGIN);
-			dispPage.drawString("State: " + currentPCB.getprocessState(),  DISPLAY_MARGIN, 48 + DISPLAY_MARGIN);
+			dispPage.drawString("PCB", DISPLAY_MARGIN, 10 + DISPLAY_MARGIN);
+			dispPage.drawString("Instruction: " + currentPCB.currentInstruction,  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
+			dispPage.drawString("SL: " + currentPCB.stackLimit,  DISPLAY_MARGIN, 30 + DISPLAY_MARGIN);
+			dispPage.drawString("CV: " + currentPCB.programCounter,  DISPLAY_MARGIN, 40 + DISPLAY_MARGIN);
+			dispPage.drawString("State: " + currentPCB.getprocessState(),  DISPLAY_MARGIN, 50 + DISPLAY_MARGIN);
 			dispPage.drawString("SP: " + currentPCB.stackPointer,  DISPLAY_MARGIN, 60 + DISPLAY_MARGIN);
-			dispPage.drawString("PID: " + currentPCB.pid, DISPLAY_MARGIN, 72 + DISPLAY_MARGIN);
+			dispPage.drawString("PID: " + currentPCB.pid, DISPLAY_MARGIN, 70 + DISPLAY_MARGIN);
 		}
 
 	}
@@ -303,6 +309,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		int lineHeight = getLineHeight();
 		itsPictureTop -= lineHeight;
 		int height = itsPicture.getHeight(this);
+		int width = itsPicture.getWidth(this);
 		Image altered = new java.awt.image.BufferedImage (width, height + lineHeight,
 				java.awt.image.BufferedImage.TYPE_INT_RGB);
 
@@ -371,27 +378,30 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 //		interactWithMemory(++segment, location, MemoryOperation.WRITE);
 //	}
 
-	public void interactWithMemory(int segment, int location, MemoryOperation operation) {
-	    segment--;
+	public void interactWithMemory(int segment, int location, int value, MemoryOperation operation) {
 	    memPage[segment].setColor(Color.BLACK);
 	    memPage[segment].fillRect(0, 0, MEM_WIDTH, MEM_HEADING);
         int headingX = 0;
         int headingY = MEM_HEADING;
+        int height = 1;
 
 	    switch(operation) {
             case READ:
                 memPage[segment].setColor(Color.BLUE);
-                memPage[segment].drawString(String.valueOf(location), headingX, headingY);
+                memPage[segment].drawString(String.valueOf(value), headingX, headingY);
                 break;
             case WRITE:
                 memPage[segment].setColor(Color.RED);
-                memPage[segment].drawString(String.valueOf(location), headingX, headingY);
+                memPage[segment].drawString(String.valueOf(value), headingX, headingY);
                 break;
-            default:
+			case CLEAR:
+				memPage[segment].drawString(" ", headingX, headingY);
+				height = Globals.SEGMENT_SIZE;
+			default:
                 //Something went wrong.
         }
 
-		memPage[segment].fillRect(0, --location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH, 1);
+		memPage[segment].fillRect(MEM_MARGIN, location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH - (2 * MEM_MARGIN), height);
 
         repaint();
     }

@@ -18,13 +18,15 @@ public class Globals {
 	public static final int CPU_CLOCK_INTERVAL = 100;
 	public static final int TIMER_IRQ = 0;
 	public static final int KEYBOARD_IRQ = 1;
+	public static final int PROCESS_IRQ = 2;
+	public static final int HALT_IRQ = 3;
     public static Thread host;
     public static final String defaultDateFormat = "yyyy/MM/dd HH:mm:ss";
 	public static final String currentLocation = "You are here.";
 	public static final short asciiValM = 109;
 
 	public static final int SEGMENT_SIZE = 256;
-	public static final int NUM_MEM_SEGMENT = 3;
+	public static final int NUM_MEM_SEGMENT = 1;
 
 	/**
 	 * Variables.

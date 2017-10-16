@@ -1,5 +1,6 @@
 package util;
 
+import exceptions.NoAvailableMemorySegment;
 import host.Memory;
 import util.Globals;
 import util.Globals.MemoryOperation;
@@ -21,6 +22,9 @@ public class MemoryManagementUnit {
         Arrays.fill(top, Globals.SEGMENT_SIZE);
 
         memory = new Memory[Globals.world.NUM_MEM_SEGMENT];
+        for (int i = 0; i < Globals.world.NUM_MEM_SEGMENT; i++) {
+            memory[i] = new Memory();
+        }
     }
 
     public PCB load(int[] program) {
@@ -30,32 +34,39 @@ public class MemoryManagementUnit {
             for (int i = 0; i < program.length; i++) {
 
                 memory[nextSegment].set(i, program[i]);
-                Globals.world.interactWithMemory(nextSegment, i, MemoryOperation.WRITE);
+                Globals.world.interactWithMemory(nextSegment, i, program[i], MemoryOperation.WRITE);
             }
             return new PCB(program, nextSegment);
         }
 
-        //Don't think we want this to happen...
+        //This should never happen... we will error check before calling.
         return new PCB();
     }
 
     public void unload(int segment) {
-        //TODO unload all from the segment
+        free(segment);
+        Globals.world.interactWithMemory(segment, 0, 0, Globals.MemoryOperation.CLEAR);
     }
 
     public int read(int segment, int location) {
-        Globals.world.interactWithMemory(segment, location, MemoryOperation.READ);
-        return memory[segment].get(location);
+        int value = memory[segment].get(location);
+        Globals.world.interactWithMemory(segment, location, value, MemoryOperation.READ);
+        return value;
+    }
+
+    public void write(int segment, int location, int value) {
+        Globals.world.interactWithMemory(segment, location, value, MemoryOperation.WRITE);
+        memory[segment].set(location, value);
     }
 
     public void push(int segment, int value) {
-        Globals.world.interactWithMemory(segment, top[segment], MemoryOperation.WRITE);
+        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.WRITE);
         memory[segment].set(--top[segment], value);
     }
 
     public int pop(int segment) {
-        Globals.world.interactWithMemory(segment, top[segment], MemoryOperation.READ);
         int value = memory[segment].get(top[segment]);
+        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.READ);
         top[segment]++;
 
         return value;
@@ -68,7 +79,8 @@ public class MemoryManagementUnit {
 
     private void free(int segment) {
         //Remove program from memory here
-        freeSegment[segment] = false;
+        freeSegment[segment] = true;
+        Globals.world.interactWithMemory(segment, 0, 0, MemoryOperation.CLEAR);
     }
 
     public int findNextFreeSegment() {
@@ -78,6 +90,10 @@ public class MemoryManagementUnit {
         }
 
         return -1;
+    }
+
+    public boolean hasFreeSegment() {
+        return (findNextFreeSegment() >= 0);
     }
 
     private boolean isSegmentFree(int segment) {

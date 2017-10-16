@@ -1,14 +1,17 @@
 package os;
 
+import exceptions.NoAvailableMemorySegment;
 import host.Control;
 import host.TurtleWorld;
 import jdk.nashorn.internal.objects.Global;
 import util.Globals;
 import util.Utils;
+import util.PCB;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 
 public class Shell {
 	private ArrayList<ShellCommand> commandList = new ArrayList<ShellCommand>();
@@ -31,6 +34,7 @@ public class Shell {
 		commandList.add(new ShellCommand(shellStatus, "status", "<string | status> - Changes the system status message."));
 		commandList.add(new ShellCommand(shellBsod, "bsod", "<string | reason> - Brings up the BSOD with the reason given."));
 		commandList.add(new ShellCommand(shellLoad, "load", "- Loads program into main memory."));
+		commandList.add(new ShellCommand(shellRun, "run", "- <int pid> runs process with given pid if available."));
 		commandList.add(new ShellCommand(shellTop, "top", "- Shows status of processes on this machine."));
 		commandList.add(new ShellCommand(shellRamCheck, "ramcheck", "- Checks all ram."));
 		
@@ -203,17 +207,25 @@ public class Shell {
 
 	public static ShellCommandFunction shellLoad = new ShellCommandFunction() {
 		@Override
-		public Object execute(ArrayList<String> input) {
-			String program = Globals.userProgramInput.getText();
+		public Object execute(ArrayList<String> in) {
+			String program = Globals.userProgramInput.getText().trim();
 
 			if (program.isEmpty()) {
 				Globals.console.putText("No program found, please try again.");
-			} else if (java.util.regex.Pattern.compile("([0-9]*\\s*)*").matcher(program).matches()) {
-				int[] intArr = new int[input.size()];
-				for (int i = 0; i < input.size(); i++) {
-					intArr[i] = Integer.parseInt(input.get(i));
+			} else if (java.util.regex.Pattern.compile("(-*[0-9]*\\s*)*").matcher(program).matches()) {
+				String[] programList = program.split(" ");
+				int[] intArr = new int[programList.length];
+				for (int i = 0; i < programList.length; i++) {
+					intArr[i] = Integer.parseInt(programList[i]);
 				}
-				Globals.mmu.load(intArr);
+				if (Globals.mmu.hasFreeSegment()) {
+					PCB currProcess = Globals.processManager.loadProgram(intArr);
+
+					Globals.console.putText("PID: " + currProcess.pid + " loaded into segment: " + currProcess.segment);
+				}
+				else
+					Globals.console.putText("No segment available for program.");
+
 			}
 			else
 				Globals.console.putText("Invalid program!");
@@ -224,8 +236,11 @@ public class Shell {
 	public static ShellCommandFunction shellTop = new ShellCommandFunction() {
 		@Override
 		public Object execute(ArrayList<String> input) {
-			for (util.PCB process: Control.processes) {
-				process.processDetails();
+
+			String[] processes = Globals.processManager.top();
+
+			for (String process : processes) {
+				Globals.console.putText(process);
 				Globals.console.advanceLine();
 			}
 
@@ -239,7 +254,7 @@ public class Shell {
 			if (in.size() == 2) {
 
 				try {
-					Globals.world.interactWithMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)), Globals.MemoryOperation.WRITE);
+					Globals.world.interactWithMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)), 1, Globals.MemoryOperation.WRITE);
 					//Globals.world.fillMemory(Integer.parseInt(in.get(0)), Integer.parseInt(in.get(1)));
 				} catch(Exception e) {
 					Globals.console.putText("Need a valid segment and location to check.");
@@ -249,6 +264,26 @@ public class Shell {
 				Globals.console.putText("Need a valid segment and location to check.");
 				return null;
 			}
+		}
+	};
+
+	public static ShellCommandFunction shellRun = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			int pid;
+			HashMap<String, String> event = new HashMap<String, String>();
+			if (in.isEmpty())
+				Globals.console.putText("Please provide PID to load");
+			else {
+				pid = Integer.parseInt(in.get(0));
+				if (Globals.processManager.isProgramLoaded(pid)) {
+					PCB currProcess = Globals.processManager.getProgram(pid);
+					event.put("pid", String.valueOf(pid));
+					Globals.kernelInterruptQueue.add(new Interrupt(Globals.PROCESS_IRQ, event));
+					Globals.world.displayPCB(currProcess);
+				}
+			}
+			return null;
 		}
 	};
 

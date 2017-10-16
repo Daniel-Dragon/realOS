@@ -6,7 +6,7 @@ import util.Globals;
 public class Memory {
     private int[] memory;
 
-    Memory() {
+    public Memory() {
         memory = new int[Globals.SEGMENT_SIZE];
         Arrays.fill(memory, 0);
     }

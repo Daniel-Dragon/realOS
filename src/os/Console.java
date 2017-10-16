@@ -139,7 +139,8 @@ public class Console implements Input, Output{
 	}
 
 	private void removeText(int numChar) {
-
+		if (buffer.length() == 0)
+			return;
 		for (int i = 0; i < numChar; i++) {
 			String currText = buffer.substring(buffer.length() - 1, buffer.length());
 			int xOffset = Globals.world.measureText(XPos, currText);

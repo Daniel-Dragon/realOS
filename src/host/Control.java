@@ -16,7 +16,7 @@ public class Control {
 	public static LinkedList<PCB> processes = new LinkedList();
 	
 	public static void hostInit() {
-		frame = new TurtleWorld(900, 700);
+		frame = new TurtleWorld(900, 500);
 		//frame.addKeyListener(Devices.devices);
 		Globals.world = frame;
 		Globals.userProgramInput = TextArea.createAndShowGUI();
