@@ -76,4 +76,13 @@ public class ResidentList {
         return val.toArray(new String[val.size()]);
     }
 
+    public boolean isLoaded(int pid) {
+        for (PCB process : processList) {
+            if (process.pid == pid)
+                return true;
+        }
+
+        return false;
+    }
+
 }

@@ -218,7 +218,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		String drawString = dateFormat.format(currDate) + " " + getCurrMessage();
 		buttonPainter.drawString(drawString, 165, 22);
 
-		if (dispPage != null && currentPCB != null) {
+		if (dispPage != null && Control.cpu.currentProcess != null) {
 			dispPage.setColor(Color.WHITE);
 			dispPage.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 			dispPage.clearRect(DISPLAY_MARGIN, DISPLAY_MARGIN, DISPLAY_WIDTH - 2 * DISPLAY_MARGIN, DISPLAY_HEIGHT - 2 * DISPLAY_MARGIN);
@@ -228,12 +228,12 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 			//dispPage.setColor(Color.WHITE);
 			//Current Instruction, Stack Limit, Current Program Counter Value, Process State, Current Stack Pointer, PID of Process.
 			dispPage.drawString("PCB", DISPLAY_MARGIN, 10 + DISPLAY_MARGIN);
-			dispPage.drawString("Instruction: " + currentPCB.currentInstruction,  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
-			dispPage.drawString("SL: " + currentPCB.stackLimit,  DISPLAY_MARGIN, 30 + DISPLAY_MARGIN);
-			dispPage.drawString("CV: " + currentPCB.programCounter,  DISPLAY_MARGIN, 40 + DISPLAY_MARGIN);
-			dispPage.drawString("State: " + currentPCB.getprocessState(),  DISPLAY_MARGIN, 50 + DISPLAY_MARGIN);
-			dispPage.drawString("SP: " + currentPCB.stackPointer,  DISPLAY_MARGIN, 60 + DISPLAY_MARGIN);
-			dispPage.drawString("PID: " + currentPCB.pid, DISPLAY_MARGIN, 70 + DISPLAY_MARGIN);
+			dispPage.drawString("Instruction: " + Control.cpu.currentProcess.currentInstruction,  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
+			dispPage.drawString("SL: " + Control.cpu.currentProcess.stackLimit,  DISPLAY_MARGIN, 30 + DISPLAY_MARGIN);
+			dispPage.drawString("CV: " + Control.cpu.currentProcess.programCounter,  DISPLAY_MARGIN, 40 + DISPLAY_MARGIN);
+			dispPage.drawString("State: " + Control.cpu.currentProcess.getprocessState(),  DISPLAY_MARGIN, 50 + DISPLAY_MARGIN);
+			dispPage.drawString("SP: " + Control.cpu.currentProcess.stackPointer,  DISPLAY_MARGIN, 60 + DISPLAY_MARGIN);
+			dispPage.drawString("PID: " + Control.cpu.currentProcess.pid, DISPLAY_MARGIN, 70 + DISPLAY_MARGIN);
 		}
 
 	}

@@ -34,7 +34,7 @@ public class Shell {
 		commandList.add(new ShellCommand(shellStatus, "status", "<string | status> - Changes the system status message."));
 		commandList.add(new ShellCommand(shellBsod, "bsod", "<string | reason> - Brings up the BSOD with the reason given."));
 		commandList.add(new ShellCommand(shellLoad, "load", "- Loads program into main memory."));
-		commandList.add(new ShellCommand(shellRun, "run", "- <int pid> runs process with given pid if available."));
+		commandList.add(new ShellCommand(shellRun, "run", "- <int | pid> runs process with given pid if available."));
 		commandList.add(new ShellCommand(shellTop, "top", "- Shows status of processes on this machine."));
 		
 	}
@@ -256,11 +256,13 @@ public class Shell {
 				Globals.console.putText("Please provide PID to load");
 			else {
 				pid = Integer.parseInt(in.get(0));
-				if (Globals.processManager.isProgramLoaded(pid)) {
+				if (Globals.processManager.isProgramInResidentList(pid)) {
 					PCB currProcess = Globals.processManager.getProgram(pid);
 					event.put("pid", String.valueOf(pid));
 					Globals.kernelInterruptQueue.add(new Interrupt(Globals.PROCESS_IRQ, event));
 					Globals.world.displayPCB(currProcess);
+				} else {
+					Globals.console.putText("Program with pid " + pid + " wasn't found, did you load it first?");
 				}
 			}
 			return null;
@@ -293,7 +295,6 @@ public class Shell {
 	public UserCommand parseInput(String buffer) {
 		UserCommand retVal;
 		buffer = buffer.trim();
-		//buffer = buffer.toLowerCase();
 		String[] parts = buffer.split(" ");
 		String name = parts[0].toLowerCase();
 		retVal = new UserCommand(name);

@@ -12,7 +12,7 @@ public class CPU {
 	private int xreg = 0; //on register.
 	private int yreg = 0;  //the y register.
 	private int zflag = 0; //the zflag.
-	private PCB currentProcess = null; //Tracks what process is currently executing.
+	public PCB currentProcess = null; //Tracks what process is currently executing.
 	
 	public void cycle() {
 		Control.kernel.kernelTrace("CPU Cycle");

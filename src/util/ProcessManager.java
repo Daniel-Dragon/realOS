@@ -66,6 +66,10 @@ public class ProcessManager {
         }
     }
 
+    public boolean isProgramInResidentList(int pid) {
+        return residentList.isLoaded(pid);
+    }
+
     public String[] top() {
         return residentList.top();
     }
