@@ -124,7 +124,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
         if (memPicture != null && memPage[0] != null) {
             for (int i = 0; i < NUM_MEM_SEGMENT; i++) {
 				g.drawImage(memPicture[i], width + (i * MEM_WIDTH) - 17, TOP - 30 + DISPLAY_HEIGHT, MEM_WIDTH, height - DISPLAY_HEIGHT + 30, this);
-				memPage[i].setColor(new Color(0, 0, 0, 30));
+				memPage[i].setColor(new Color(0, 0, 0, 15));
 				memPage[i].fillRect(MEM_MARGIN, MEM_MARGIN + MEM_HEADING, MEM_WIDTH - MEM_MARGIN * 2, SEGMENT_SIZE);
 			}
         }
