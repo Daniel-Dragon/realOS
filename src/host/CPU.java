@@ -16,12 +16,13 @@ public class CPU {
 	
 	public void cycle() {
 		Control.kernel.kernelTrace("CPU Cycle");
-		try {
-			executeProgram();
-		} catch (Exception e) {
-			System.out.println("Uncaught exception: " + e.getMessage());
-			halt(1);
-		}
+//		try {
+//			executeProgram();
+//		} catch (Exception e) {
+//			System.out.println("Uncaught exception: " + e.getMessage());
+//			halt(1);
+//		}
+		executeProgram();
 	}
 
 	public boolean isExecuting() {
@@ -102,6 +103,8 @@ public class CPU {
 				halt(1);
 				break;
 		}
+		if (currentProcess != null)
+			currentProcess.accountingInformation++;
 	}
 
 	public void jmp() {

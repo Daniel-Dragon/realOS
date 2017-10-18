@@ -4,7 +4,7 @@ import util.Globals.*;
 import util.Globals.ProcessState;
 
 public class PCB {
-
+//TODO use stackPointer for top of stack instead of whatever I'm doing.
     //Private members
     private static int pidCounter = 0;
 
@@ -19,15 +19,17 @@ public class PCB {
     //cpu registers
     //cpu schedule information
     //memory management information
-    private int accountingInformation;
+    public int accountingInformation;
     //I/o status information
 
     public PCB() {
         this.processState = ProcessState.TERMINATED;
         this.pid = -1;
-        programCounter = 0;
-        accountingInformation = 0;
-        currentInstruction = 0;
+        this.programCounter = 0;
+        this.accountingInformation = 0;
+        this.currentInstruction = 0;
+        this.accountingInformation = 0;
+        this.stackPointer = Globals.SEGMENT_SIZE;
     }
 
     public PCB(int[] program, int segment) {
@@ -35,8 +37,8 @@ public class PCB {
         this.pid = pidCounter++;
         this.processState = ProcessState.NEW;
         stackLimit = program.length;
-        stackPointer = Globals.SEGMENT_SIZE - 1;
         this.segment = segment;
+
     }
 
     public void stateSave() {

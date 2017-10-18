@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class ProcessManager {
-
     private ResidentList residentList;
     private ReadyQueue readyQueue;
 
@@ -16,7 +15,7 @@ public class ProcessManager {
     }
 
     public void beginExecuting(int pid) {
-        if (isProgramLoaded(pid))
+        if (isProgramInResidentList(pid))
             host.Control.cpu.loadProgram(getProgram(pid));
     }
 
@@ -37,33 +36,18 @@ public class ProcessManager {
             System.out.println("System exited with status code: " + statusCode);
         if (residentList.isProgramLoaded(pid)) {
             PCB process = residentList.getProgram(pid);
-            //residentList.unloadProgram(pid);
             host.Control.cpu.haltProgram();
             Globals.mmu.unload(process.segment);
-
+            Globals.console.putText("Process exited successfully. Cycles used: "
+                    + process.accountingInformation
+                    + " segment " + process.segment + " is now free.");
 
         }
     }
 
-    public PCB getProgram(int pid) {
+    public PCB getProgram(int pid) throws ProgramNotFound{
         //Should have already checked to see if it exists... but there's a better way to do this.
-        try {
-            return getProgramHelper(pid);
-        } catch(ProgramNotFound e) {
-            return new PCB();
-        }
-    }
-    private PCB getProgramHelper(int pid) throws ProgramNotFound {
         return residentList.getProgram(pid);
-    }
-
-    public boolean isProgramLoaded(int pid) {
-        try {
-            getProgramHelper(pid);
-            return true;
-        } catch (ProgramNotFound e) {
-            return false;
-        }
     }
 
     public boolean isProgramInResidentList(int pid) {

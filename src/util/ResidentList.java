@@ -18,18 +18,10 @@ public class ResidentList {
     }
 
     public void unloadProgram(int pid) {
-        //Don't need to do anything?
+        //Don't need to do anything? Keeping stub just in case this becomes useful.
     }
 
-    public PCB getProgram(int pid) {
-        //Again, not the best but... we should be calling isProgramLoaded first...
-        try {
-            return getProgramHelper(pid);
-        } catch(ProgramNotFound e) {
-            return new PCB();
-        }
-    }
-    public PCB getProgramHelper(int pid) throws ProgramNotFound{
+    public PCB getProgram(int pid) throws ProgramNotFound{
         for (PCB program : processList) {
             if (program != null && program.pid == pid)
                 return program;
@@ -50,16 +42,6 @@ public class ResidentList {
         return false;
     }
 
-    private int numProgramsLoaded() {
-        int ans = 0;
-        for (PCB process : processList) {
-            if (process != null)
-                ans++;
-        }
-
-        return ans;
-    }
-
     public String[] top() {
         LinkedList<String> val = new LinkedList<String>();
 
@@ -78,7 +60,7 @@ public class ResidentList {
 
     public boolean isLoaded(int pid) {
         for (PCB process : processList) {
-            if (process.pid == pid)
+            if (process.pid == pid && process.processState != Globals.ProcessState.TERMINATED)
                 return true;
         }
 
