@@ -41,6 +41,7 @@ public class ProcessManager {
             Globals.console.putText("Process exited successfully. Cycles used: "
                     + process.accountingInformation
                     + " segment " + process.segment + " is now free.");
+            Globals.console.advanceLine();
 
         }
     }

@@ -4,12 +4,11 @@ import util.Globals.*;
 import util.Globals.ProcessState;
 
 public class PCB {
-//TODO use stackPointer for top of stack instead of whatever I'm doing.
     //Private members
     private static int pidCounter = 0;
 
     public ProcessState processState;
-    public int currentInstruction;
+    //public int currentInstruction;
     public int pid;
     public int programCounter;
     public int stackLimit;
@@ -27,7 +26,7 @@ public class PCB {
         this.pid = -1;
         this.programCounter = 0;
         this.accountingInformation = 0;
-        this.currentInstruction = 0;
+        //this.currentInstruction = 0;
         this.accountingInformation = 0;
         this.stackPointer = Globals.SEGMENT_SIZE;
     }
@@ -49,10 +48,6 @@ public class PCB {
     public void stateRestore() {
         processState = ProcessState.RUNNING;
         //Restore CPU Registers?
-    }
-
-    public void process() {
-        accountingInformation++;
     }
 
     public void processDetails() {
@@ -81,5 +76,10 @@ public class PCB {
             default:
                 return "INVALID PROCESS STATE";
         }
+    }
+
+    public String getCurrentInstruction() {
+        
+        return String.valueOf(Globals.mmu.read(this.segment, this.programCounter));
     }
 }

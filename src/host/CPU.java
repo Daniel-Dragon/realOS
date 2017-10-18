@@ -16,13 +16,13 @@ public class CPU {
 	
 	public void cycle() {
 		Control.kernel.kernelTrace("CPU Cycle");
-//		try {
-//			executeProgram();
-//		} catch (Exception e) {
-//			System.out.println("Uncaught exception: " + e.getMessage());
-//			halt(1);
-//		}
-		executeProgram();
+		try {
+			executeProgram();
+		} catch (Exception e) {
+			System.out.println("Uncaught exception: " + e.getMessage());
+			halt(1);
+		}
+		//executeProgram();
 	}
 
 	public boolean isExecuting() {
@@ -36,7 +36,7 @@ public class CPU {
 	public void haltProgram() { currentProcess = null; }
 
 	public void executeProgram() {
-		int instruction = Globals.mmu.read(currentProcess.segment, currentProcess.currentInstruction);
+		int instruction = Globals.mmu.read(currentProcess.segment, currentProcess.programCounter);
 		currentProcess.processState = Globals.ProcessState.RUNNING;
 		switch(instruction) {
 			case 0:
@@ -108,30 +108,30 @@ public class CPU {
 	}
 
 	public void jmp() {
-		currentProcess.currentInstruction = Globals.mmu.pop(currentProcess);
+		currentProcess.programCounter = Globals.mmu.pop(currentProcess);
 	}
 
 	public void beq() {
 		int jumpTo = Globals.mmu.pop(currentProcess);
 
 		if (Globals.mmu.pop(currentProcess) == Globals.mmu.pop(currentProcess))
-			currentProcess.currentInstruction = jumpTo;
+			currentProcess.programCounter = jumpTo;
 		else
-			currentProcess.currentInstruction++;
+			currentProcess.programCounter++;
 	}
 
 	public void ldloc() {
-		int location = Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction);
+		int location = Globals.mmu.read(currentProcess.segment, ++currentProcess.programCounter);
 
 		if (location < 0)
 			location = currentProcess.stackLimit + location;
 
 		Globals.mmu.push(currentProcess, Globals.mmu.read(currentProcess.segment, location));
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	public void sys() {
-		int instruction = Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction);
+		int instruction = Globals.mmu.read(currentProcess.segment, ++currentProcess.programCounter);
 
 		switch(instruction) {
 			case 1:
@@ -160,11 +160,11 @@ public class CPU {
 				break;
 		}
 
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	public void iarith() {
-		int instruction = Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction);
+		int instruction = Globals.mmu.read(currentProcess.segment, ++currentProcess.programCounter);
 
 		switch(instruction) {
 			case 1:
@@ -202,24 +202,24 @@ public class CPU {
 				halt(1);
 				break;
 		}
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	private void pushZero() {
 		Globals.mmu.push(currentProcess, 0);
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	private void pushOne() {
 		Globals.mmu.push(currentProcess, 1);
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	private void dup() {
 		int val = Globals.mmu.pop(currentProcess);
 		Globals.mmu.push(currentProcess, val);
 		Globals.mmu.push(currentProcess, val);
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	private void downVal() {
@@ -239,24 +239,24 @@ public class CPU {
 		for (int i = numDown - 1; i >= 0; i--)
 			Globals.mmu.push(currentProcess, tempStorage[i]);
 
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	private void pushNext() {
-		Globals.mmu.push(currentProcess, Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction));
+		Globals.mmu.push(currentProcess, Globals.mmu.read(currentProcess.segment, ++currentProcess.programCounter));
 
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	private void stLoc() {
 		int value = Globals.mmu.pop(currentProcess);
-		int location = Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction);
+		int location = Globals.mmu.read(currentProcess.segment, ++currentProcess.programCounter);
 		if (location < 0)
 			location += currentProcess.stackLimit;
 
 		Globals.mmu.write(currentProcess.segment, location, value);
 
-		currentProcess.currentInstruction++;
+		currentProcess.programCounter++;
 	}
 
 	private void halt(int statusCode) {

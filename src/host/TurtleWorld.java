@@ -227,12 +227,12 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 			//dispPage.fillRect(DISPLAY_MARGIN, DISPLAY_MARGIN, DISPLAY_WIDTH - DISPLAY_MARGIN, DISPLAY_HEIGHT - DISPLAY_MARGIN);
 			//dispPage.setColor(Color.WHITE);
 			//Current Instruction, Stack Limit, Current Program Counter Value, Process State, Current Stack Pointer, PID of Process.
-			dispPage.drawString("PCB", DISPLAY_MARGIN, 10 + DISPLAY_MARGIN);
-			dispPage.drawString("Instruction: " + Control.cpu.currentProcess.currentInstruction,  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
-			dispPage.drawString("SL: " + Control.cpu.currentProcess.stackLimit,  DISPLAY_MARGIN, 30 + DISPLAY_MARGIN);
-			dispPage.drawString("CV: " + Control.cpu.currentProcess.programCounter,  DISPLAY_MARGIN, 40 + DISPLAY_MARGIN);
+			dispPage.drawString("Process Information", DISPLAY_MARGIN, 10 + DISPLAY_MARGIN);
+			dispPage.drawString("Instruction: " + Control.cpu.currentProcess.getCurrentInstruction(),  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
+			dispPage.drawString("Stack Limit: " + Control.cpu.currentProcess.stackLimit,  DISPLAY_MARGIN, 30 + DISPLAY_MARGIN);
+			dispPage.drawString("Program Counter: " + Control.cpu.currentProcess.programCounter,  DISPLAY_MARGIN, 40 + DISPLAY_MARGIN);
 			dispPage.drawString("State: " + Control.cpu.currentProcess.getprocessState(),  DISPLAY_MARGIN, 50 + DISPLAY_MARGIN);
-			dispPage.drawString("SP: " + Control.cpu.currentProcess.stackPointer,  DISPLAY_MARGIN, 60 + DISPLAY_MARGIN);
+			dispPage.drawString("Stack Pointer: " + Control.cpu.currentProcess.stackPointer,  DISPLAY_MARGIN, 60 + DISPLAY_MARGIN);
 			dispPage.drawString("PID: " + Control.cpu.currentProcess.pid, DISPLAY_MARGIN, 70 + DISPLAY_MARGIN);
 		}
 
@@ -274,25 +274,25 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// TODOno Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// TODOno Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// TODOno Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// TODOno Auto-generated method stub
 
 	}
 
