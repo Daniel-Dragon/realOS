@@ -79,7 +79,7 @@ public class PCB {
     }
 
     public String getCurrentInstruction() {
-        
+
         return String.valueOf(Globals.mmu.read(this.segment, this.programCounter));
     }
 }

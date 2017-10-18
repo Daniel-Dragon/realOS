@@ -87,7 +87,6 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
             memPage[i].setColor(Color.magenta);
             memPage[i].fillRect(0, MEM_HEADING, MEM_WIDTH, SEGMENT_SIZE + (2 * MEM_MARGIN));
             memPage[i].clearRect(MEM_MARGIN, MEM_MARGIN + MEM_HEADING, MEM_WIDTH - MEM_MARGIN * 2, SEGMENT_SIZE);
-
         }
 
 		dispPicture = new java.awt.image.BufferedImage (DISPLAY_WIDTH, DISPLAY_HEIGHT,
@@ -119,13 +118,15 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 //		g.fillRect(0, 0, width, height);
 		if (itsPicture != null) {
 			g.drawImage (itsPicture, EDGE, itsPictureTop, this);
-			g.drawImage(buttonSpace, EDGE, TOP-30, width - MEM_WIDTH , 30, this);
+			g.drawImage(buttonSpace, EDGE, 30, width - MEM_WIDTH , 30, this);
 		}
 
-        if (memPicture != null) {
+        if (memPicture != null && memPage[0] != null) {
             for (int i = 0; i < NUM_MEM_SEGMENT; i++) {
-                g.drawImage(memPicture[i], width + (i * MEM_WIDTH) - 17, TOP - 30 + DISPLAY_HEIGHT, MEM_WIDTH, height, this);
-            }
+				g.drawImage(memPicture[i], width + (i * MEM_WIDTH) - 17, TOP - 30 + DISPLAY_HEIGHT, MEM_WIDTH, height, this);
+				memPage[i].setColor(new Color(0, 0, 0, 30));
+				memPage[i].fillRect(MEM_MARGIN, MEM_MARGIN + MEM_HEADING, MEM_WIDTH - MEM_MARGIN * 2, SEGMENT_SIZE);
+			}
         }
 
         if (dispPicture != null) {
@@ -339,44 +340,6 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
     public int getCharacterWidth() {
 		return ((width - (EDGE * 2)) /measureText(0, "x"));
 	}
-
-//	public void drawMemory(MemoryOperation operation, int segment, int location) {
-//	    //0 index.
-//	    --segment;
-//	    --location;
-//
-//        if (operation == MemoryOperation.CLEAR) {
-//            //clear segment given.
-//        }
-//        else {
-//            memPage[segment].setColor(Color.MAGENTA);
-//            memPage[segment].fillRect(MEM_MARGIN, location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH - MEM_MARGIN, 1);
-//            setMemoryColor(memPage[segment], operation);
-//            memPage[segment].drawString(String.valueOf(location), 0, MEM_HEADING);
-//        }
-//    }
-//    private void setMemoryColor(Graphics memPage, MemoryOperation operation) {
-//          switch(operation) {
-//              case WRITE:
-//                  memPage.setColor(Color.RED);
-//                  break;
-//              case READ:
-//                  memPage.setColor(Color.BLUE);
-//                  break;
-//              case CLEAR:
-//                  memPage.setColor(Color.BLUE);
-//                  break;
-//              default:
-//                  //Something went wrong if we're here.
-//                  memPage.setColor(Color.MAGENTA);
-//          }
-//    }
-//	public void fillMemory(int segment, int location) {
-//        --segment;
-//        memPage[segment].setColor(Color.MAGENTA);
-//		memPage[segment].fillRect(0, --location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH, 1);
-//		interactWithMemory(++segment, location, MemoryOperation.WRITE);
-//	}
 
 	public void interactWithMemory(int segment, int location, int value, MemoryOperation operation) {
 	    memPage[segment].setColor(Color.BLACK);
