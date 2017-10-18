@@ -108,13 +108,13 @@ public class CPU {
 	}
 
 	public void jmp() {
-		currentProcess.currentInstruction = Globals.mmu.pop(currentProcess.segment);
+		currentProcess.currentInstruction = Globals.mmu.pop(currentProcess);
 	}
 
 	public void beq() {
-		int jumpTo = Globals.mmu.pop(currentProcess.segment);
+		int jumpTo = Globals.mmu.pop(currentProcess);
 
-		if (Globals.mmu.pop(currentProcess.segment) == Globals.mmu.pop(currentProcess.segment))
+		if (Globals.mmu.pop(currentProcess) == Globals.mmu.pop(currentProcess))
 			currentProcess.currentInstruction = jumpTo;
 		else
 			currentProcess.currentInstruction++;
@@ -126,7 +126,7 @@ public class CPU {
 		if (location < 0)
 			location = currentProcess.stackLimit + location;
 
-		Globals.mmu.push(currentProcess.segment, Globals.mmu.read(currentProcess.segment, location));
+		Globals.mmu.push(currentProcess, Globals.mmu.read(currentProcess.segment, location));
 		currentProcess.currentInstruction++;
 	}
 
@@ -136,17 +136,17 @@ public class CPU {
 		switch(instruction) {
 			case 1:
 				//print top value of stack as int
-				Globals.console.putText(String.valueOf(Globals.mmu.pop(currentProcess.segment)));
+				Globals.console.putText(String.valueOf(Globals.mmu.pop(currentProcess)));
 
 				break;
 			case 2:
 				//print top value of stack as char
-				char currChar = (char)Globals.mmu.pop(currentProcess.segment);
+				char currChar = (char)Globals.mmu.pop(currentProcess);
 				if (currChar == '\n')
 					Globals.console.advanceLine();
 				else
 					Globals.console.putText(String.valueOf(currChar));
-				Globals.console.putText(String.valueOf((char)Globals.mmu.pop(currentProcess.segment)));
+				Globals.console.putText(String.valueOf((char)Globals.mmu.pop(currentProcess)));
 				break;
 			case 3:
 				//prints new line character
@@ -169,24 +169,24 @@ public class CPU {
 		switch(instruction) {
 			case 1:
 				//First + second
-				Globals.mmu.push(currentProcess.segment, (Globals.mmu.pop(currentProcess.segment) + Globals.mmu.pop(currentProcess.segment)));
+				Globals.mmu.push(currentProcess, (Globals.mmu.pop(currentProcess) + Globals.mmu.pop(currentProcess)));
 				break;
 			case 2:
 				//First - second
-				Globals.mmu.push(currentProcess.segment, (Globals.mmu.pop(currentProcess.segment) - Globals.mmu.pop(currentProcess.segment)));
+				Globals.mmu.push(currentProcess, (Globals.mmu.pop(currentProcess) - Globals.mmu.pop(currentProcess)));
 				break;
 			case 3:
 				//First * second
-				Globals.mmu.push(currentProcess.segment, (Globals.mmu.pop(currentProcess.segment) * Globals.mmu.pop(currentProcess.segment)));
+				Globals.mmu.push(currentProcess, (Globals.mmu.pop(currentProcess) * Globals.mmu.pop(currentProcess)));
 				break;
 			case 4:
 				//First / second
-				Globals.mmu.push(currentProcess.segment, (Globals.mmu.pop(currentProcess.segment) / Globals.mmu.pop(currentProcess.segment)));
+				Globals.mmu.push(currentProcess, (Globals.mmu.pop(currentProcess) / Globals.mmu.pop(currentProcess)));
 				break;
 			case 5:
 				//if (first == second) push 0; if (first > second) push 1; if (first < second) push -1;
-				int first = Globals.mmu.pop(currentProcess.segment);
-				int second = Globals.mmu.pop(currentProcess.segment);
+				int first = Globals.mmu.pop(currentProcess);
+				int second = Globals.mmu.pop(currentProcess);
 				int answer;
 
 				if (first == second)
@@ -196,7 +196,7 @@ public class CPU {
 				else
 					answer = -1;
 
-				Globals.mmu.push(currentProcess.segment, answer);
+				Globals.mmu.push(currentProcess, answer);
 				break;
 			default:
 				halt(1);
@@ -206,25 +206,25 @@ public class CPU {
 	}
 
 	private void pushZero() {
-		Globals.mmu.push(currentProcess.segment, 0);
+		Globals.mmu.push(currentProcess, 0);
 		currentProcess.currentInstruction++;
 	}
 
 	private void pushOne() {
-		Globals.mmu.push(currentProcess.segment, 1);
+		Globals.mmu.push(currentProcess, 1);
 		currentProcess.currentInstruction++;
 	}
 
 	private void dup() {
-		int val = Globals.mmu.pop(currentProcess.segment);
-		Globals.mmu.push(currentProcess.segment, val);
-		Globals.mmu.push(currentProcess.segment, val);
+		int val = Globals.mmu.pop(currentProcess);
+		Globals.mmu.push(currentProcess, val);
+		Globals.mmu.push(currentProcess, val);
 		currentProcess.currentInstruction++;
 	}
 
 	private void downVal() {
-		int numDown = Globals.mmu.pop(currentProcess.segment);
-		int val = Globals.mmu.pop(currentProcess.segment);
+		int numDown = Globals.mmu.pop(currentProcess);
+		int val = Globals.mmu.pop(currentProcess);
 
 		if (numDown > getStackSize()) {
 			//Globals.osShell.shellBsod.execute()
@@ -232,24 +232,24 @@ public class CPU {
 		int[] tempStorage = new int[numDown];
 
 		for (int i = 0; i < numDown; i++)
-			tempStorage[i] = Globals.mmu.pop(currentProcess.segment);
+			tempStorage[i] = Globals.mmu.pop(currentProcess);
 
-		Globals.mmu.push(currentProcess.segment, val);
+		Globals.mmu.push(currentProcess, val);
 
 		for (int i = numDown - 1; i >= 0; i--)
-			Globals.mmu.push(currentProcess.segment, tempStorage[i]);
+			Globals.mmu.push(currentProcess, tempStorage[i]);
 
 		currentProcess.currentInstruction++;
 	}
 
 	private void pushNext() {
-		Globals.mmu.push(currentProcess.segment, Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction));
+		Globals.mmu.push(currentProcess, Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction));
 
 		currentProcess.currentInstruction++;
 	}
 
 	private void stLoc() {
-		int value = Globals.mmu.pop(currentProcess.segment);
+		int value = Globals.mmu.pop(currentProcess);
 		int location = Globals.mmu.read(currentProcess.segment, ++currentProcess.currentInstruction);
 		if (location < 0)
 			location += currentProcess.stackLimit;

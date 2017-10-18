@@ -18,8 +18,8 @@ public class MemoryManagementUnit {
         freeSegment = new boolean[Globals.world.NUM_MEM_SEGMENT];
         Arrays.fill(freeSegment, true);
 
-        top = new int[Globals.world.NUM_MEM_SEGMENT];
-        Arrays.fill(top, Globals.SEGMENT_SIZE);
+//        top = new int[Globals.world.NUM_MEM_SEGMENT];
+//        Arrays.fill(top, Globals.SEGMENT_SIZE);
 
         memory = new Memory[Globals.world.NUM_MEM_SEGMENT];
         for (int i = 0; i < Globals.world.NUM_MEM_SEGMENT; i++) {
@@ -59,15 +59,28 @@ public class MemoryManagementUnit {
         memory[segment].set(location, value);
     }
 
-    public void push(int segment, int value) {
-        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.WRITE);
-        memory[segment].set(--top[segment], value);
+//    public void push(int segment, int value) {
+//        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.WRITE);
+//        memory[segment].set(--top[segment], value);
+//    }
+
+    public void push(PCB process, int value) {
+        Globals.world.interactWithMemory(process.segment, process.stackPointer, value, MemoryOperation.WRITE);
+        memory[process.segment].set(--process.stackPointer, value);
     }
 
-    public int pop(int segment) {
-        int value = memory[segment].get(top[segment]);
-        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.READ);
-        top[segment]++;
+//    public int pop(int segment) {
+//        int value = memory[segment].get(top[segment]);
+//        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.READ);
+//        top[segment]++;
+//
+//        return value;
+//    }
+
+    public int pop(PCB process) {
+        int value = memory[process.segment].get(process.stackPointer);
+        Globals.world.interactWithMemory(process.segment, process.stackPointer, value, MemoryOperation.READ);
+        process.stackPointer++;
 
         return value;
     }
