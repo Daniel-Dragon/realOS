@@ -26,7 +26,7 @@ public class CPU {
 	}
 
 	public boolean isExecuting() {
-		return !(currentProcess == null);
+		return !(currentProcess == null || currentProcess.processState == Globals.ProcessState.TERMINATED);
 	}
 
 	public void loadProgram(PCB processIn) {
@@ -223,7 +223,8 @@ public class CPU {
 	}
 
 	private void downVal() {
-		int numDown = Globals.mmu.pop(currentProcess);
+		//int numDown = Globals.mmu.pop(currentProcess);
+		int numDown = Globals.mmu.read(currentProcess.segment, ++currentProcess.programCounter);
 		int val = Globals.mmu.pop(currentProcess);
 
 		if (numDown > getStackSize()) {
@@ -272,7 +273,7 @@ public class CPU {
 		}
 
 		currentProcess.processState = Globals.ProcessState.TERMINATED;
-		currentProcess = null;
+		//currentProcess = null;
 	}
 
 	private int getStackSize() {
