@@ -134,7 +134,7 @@ public class Shell {
 
 			for (char ch: stringIn.toCharArray()) {
 				if (Character.isLetter(ch)) {
-					char charOut = ((short)ch > Globals.asciiValM) ? (char)((short)ch - 13) : (char)((short)ch + 13);
+					char charOut = ((short) Character.toLowerCase(ch) > Globals.asciiValM) ? (char)((short)ch - 13) : (char)((short)ch + 13);
 					stringOut.append(charOut);
 				} else {
 					stringOut.append(ch);
