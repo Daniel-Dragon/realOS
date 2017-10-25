@@ -24,9 +24,10 @@ public class Globals {
     public static final String defaultDateFormat = "yyyy/MM/dd HH:mm:ss";
 	public static final String currentLocation = "You are here.";
 	public static final short asciiValM = 109;
+	public static final int DEFAULT_QUANTUM = 6;
 
 	public static final int SEGMENT_SIZE = 256;
-	public static final int NUM_MEM_SEGMENT = 1;
+	public static final int NUM_MEM_SEGMENT = 3;
 
 	/**
 	 * Variables.

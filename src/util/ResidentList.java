@@ -67,4 +67,10 @@ public class ResidentList {
         return false;
     }
 
+    public void unloadAll() {
+        for (PCB process : processList) {
+            process.processState = Globals.ProcessState.TERMINATED;
+        }
+    }
+
 }

@@ -8,6 +8,7 @@ import util.Globals;
 import util.Utils;
 import util.PCB;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -36,6 +37,9 @@ public class Shell {
 		commandList.add(new ShellCommand(shellLoad, "load", "- Loads program into main memory."));
 		commandList.add(new ShellCommand(shellRun, "run", "- <int | pid> runs process with given pid if available."));
 		commandList.add(new ShellCommand(shellTop, "top", "- Shows status of processes on this machine."));
+		commandList.add(new ShellCommand(shellClearMem, "clearmem", "- removes all programs from memory"));
+		commandList.add(new ShellCommand(shellKill, "kill", "- <pid> Attempts to gracefully shut down the process with PID provided"));
+		commandList.add(new ShellCommand(shellQuantum, "quantum", "- <quantum number> Sets the round robin quantum of the process manager to specified value"));
 		
 	}
 	
@@ -247,6 +251,14 @@ public class Shell {
 		}
 	};
 
+	public static ShellCommandFunction shellClearMem = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			Globals.processManager.unloadAll();
+			return null;
+		}
+	};
+
 	public static ShellCommandFunction shellRun = new ShellCommandFunction() {
 		@Override
 		public Object execute(ArrayList<String> in) {
@@ -265,6 +277,55 @@ public class Shell {
 					Globals.console.putText("Program with pid " + pid + " wasn't found, did you load it first?");
 				}
 			}
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellKill = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			if (in.size() == 0) {
+				Globals.console.putText("Please provide PID to kill.");
+				return null;
+			}
+
+			int pid;
+
+			try {
+				pid = Integer.parseInt(in.get(0));
+			} catch (NumberFormatException e) {
+				Globals.console.putText(in.get(0) + " is not a valid PID.");
+				return null;
+			}
+
+			if (Globals.processManager.isProgramInResidentList(pid)) {
+				Globals.processManager.haltProgram(pid, 0);
+			} else {
+				Globals.console.putText("Program with PID " + pid + " wasn't found! Did it finish?");
+			}
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellQuantum = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			if (in.size() == 0)
+			{
+				Globals.console.putText("Please provide a valid integer for the quantum.");
+				return null;
+			}
+
+			int quantum;
+			try {
+				quantum = Integer.parseInt(in.get(0));
+			} catch(NumberFormatException e) {
+				Globals.console.putText(in.get(0) + " isn't a valid quantum.");
+				return null;
+			}
+
+			Globals.processManager.setQuantum(quantum);
+			Globals.console.putText("Quantum has been set to " + String.valueOf(quantum));
 			return null;
 		}
 	};

@@ -9,6 +9,6 @@ public class Debug {
 	public static void main(String[] args) throws InterruptedException {
 		Control.hostInit();
 		Control.startOS();  //start the os...
-		Globals.userProgramInput.setText("13 3 0 13 31 0 11 2 10 14 -2 11 1 10 14 -1 11 1 4 4 2 -1 4 3 2 -2 4 2 11 1 0 13 23 13 73 13 40 13 6 0 3 1 3 3 15 0 0");
+		Globals.userProgramInput.setText("8 9 10 14 29 4 1 10 3 1 3 3 14 30 2 29 2 30 2 29 13 144 13 28 1 13 2 0 15 0 0");
 	}
 }

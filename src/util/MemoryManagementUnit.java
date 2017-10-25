@@ -105,6 +105,13 @@ public class MemoryManagementUnit {
         return -1;
     }
 
+    public void clearMemory() {
+        for (int i = 0; i < Globals.NUM_MEM_SEGMENT; i++) {
+            Globals.world.interactWithMemory(i, 0, 0, MemoryOperation.CLEAR);
+            freeSegment[i] = true;
+        }
+    }
+
     public boolean hasFreeSegment() {
         return (findNextFreeSegment() >= 0);
     }

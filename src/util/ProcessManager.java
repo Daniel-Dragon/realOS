@@ -1,6 +1,7 @@
 package util;
 
 import exceptions.ProgramNotFound;
+import host.Control;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -8,10 +9,12 @@ import java.util.Queue;
 public class ProcessManager {
     private ResidentList residentList;
     private ReadyQueue readyQueue;
+    private int quantum;
 
     public ProcessManager() {
         readyQueue = new ReadyQueue();
         residentList = new ResidentList();
+        quantum = Globals.DEFAULT_QUANTUM;
     }
 
     public void beginExecuting(int pid) {
@@ -57,5 +60,17 @@ public class ProcessManager {
 
     public String[] top() {
         return residentList.top();
+    }
+
+    public void unloadAll() {
+        if (host.Control.cpu.isExecuting()) {
+            haltProgram(Control.cpu.currentProcess.pid, 1);
+        }
+        residentList.unloadAll();
+        Globals.mmu.clearMemory();
+    }
+
+    public void setQuantum(int quantum) {
+        this.quantum = quantum;
     }
 }
