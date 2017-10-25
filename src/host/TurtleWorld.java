@@ -45,10 +45,12 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	private PCB currentPCB = null;
 	private FontMetrics itsMetrics;
 	private int width;
+	private int widthOffset;
 	private int height;
 	private boolean startActive = true, haltActive = false;
 	private String message = "";
 	private static final GraphicsConfiguration config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+	private boolean blanked = false;
 
 	public TurtleWorld (int width, int height)
 	{	super ("realOS -- The Operating System");  // set the title for the frame
@@ -57,7 +59,6 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		addMouseListener(this);
 		createButtons();
 		setDefaultCloseOperation (EXIT_ON_CLOSE); // no WindowListener
-		int widthOffset;
 		widthOffset = ((MEM_WIDTH * NUM_MEM_SEGMENT) > (DISPLAY_WIDTH)) ? (MEM_WIDTH * NUM_MEM_SEGMENT) : DISPLAY_WIDTH;
 		setSize (width + 2 * EDGE + widthOffset, height + TOP + EDGE + DISPLAY_HEIGHT);
 		toFront();  // put this frame in front of the BlueJ window
@@ -114,8 +115,11 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 
 	public void paint (Graphics g)
 	{
-//		g.setColor(Color.BLACK);
-//		g.fillRect(0, 0, width, height);
+		if (!blanked) {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, width + widthOffset, height + TOP);
+			blanked = true;
+		}
 		if (itsPicture != null) {
 			g.drawImage (itsPicture, EDGE, itsPictureTop, this);
 			g.drawImage(buttonSpace, EDGE, 30, width - MEM_WIDTH , 30, this);
@@ -229,7 +233,7 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 			//dispPage.setColor(Color.WHITE);
 			//Current Instruction, Stack Limit, Current Program Counter Value, Process State, Current Stack Pointer, PID of Process.
 			dispPage.drawString("Process Information", DISPLAY_MARGIN, 10 + DISPLAY_MARGIN);
-			dispPage.drawString("Instruction: " + Control.cpu.currentProcess.getCurrentInstruction(),  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
+			dispPage.drawString("Instruction: " + String.valueOf(Control.cpu.currentProcess.getCurrentInstruction()),  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
 			dispPage.drawString("Stack Limit: " + Control.cpu.currentProcess.stackLimit,  DISPLAY_MARGIN, 30 + DISPLAY_MARGIN);
 			dispPage.drawString("Program Counter: " + Control.cpu.currentProcess.programCounter,  DISPLAY_MARGIN, 40 + DISPLAY_MARGIN);
 			dispPage.drawString("State: " + Control.cpu.currentProcess.getprocessState(),  DISPLAY_MARGIN, 50 + DISPLAY_MARGIN);
