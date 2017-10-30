@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import util.Globals;
 import host.Control;
 import host.Devices;
+import util.Globals.IRQ;
 
 public class Kernel {
 	
@@ -65,20 +66,20 @@ public class Kernel {
 		Devices.devices.hostDisableKeyboardInterrupt();
 	}
 	
-	public void kernelInterruptHandler(int irq, HashMap<String, String> params) {
+	public void kernelInterruptHandler(IRQ irq, HashMap<String, String> params) {
 		kernelTrace("Handling IRQ~" + irq);
 		switch(irq) {
-			case Globals.TIMER_IRQ :
+			case TIMER :
 				kernelTimerISR();
 				break;
-			case Globals.KEYBOARD_IRQ :
+			case KEYBOARD :
 				Globals.kernelKeyboardDriver.isr(params);
 				Globals.standardIn.handleInput();
 				break;
-			case Globals.PROCESS_IRQ:
+			case PROCESS:
 				Globals.processManager.beginExecuting(Integer.parseInt(params.get("pid")));
 				break;
-			case Globals.HALT_IRQ:
+			case HALT:
 				Globals.processManager.haltProgram(Integer.parseInt(params.get("pid")), Integer.parseInt(params.get("statusCode")));
 				break;
 			default:

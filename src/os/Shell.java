@@ -271,7 +271,7 @@ public class Shell {
 				if (Globals.processManager.isProgramInResidentList(pid)) {
 					PCB currProcess = Globals.processManager.getProgram(pid);
 					event.put("pid", String.valueOf(pid));
-					Globals.kernelInterruptQueue.add(new Interrupt(Globals.PROCESS_IRQ, event));
+					Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.PROCESS, event));
 					Globals.world.displayPCB(currProcess);
 				} else {
 					Globals.console.putText("Program with pid " + pid + " wasn't found, did you load it first?");

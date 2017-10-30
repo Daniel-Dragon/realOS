@@ -24,7 +24,7 @@ public class Devices extends java.awt.event.KeyAdapter{
 		event.put("location","" + e.getKeyLocation());
 		event.put("id","" + e.getID());
 		event.put("char","" + e.getKeyChar());
-		Globals.kernelInterruptQueue.add(new Interrupt(Globals.KEYBOARD_IRQ, event));
+		Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.KEYBOARD, event));
 	}
 	
 	public void hostEnableKeyboardInterrupt() {

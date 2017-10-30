@@ -264,7 +264,7 @@ public class CPU {
 		HashMap<String, String> event = new HashMap<String, String>();
 		event.put("statusCode", String.valueOf(statusCode));
 		event.put("pid", String.valueOf(currentProcess.pid));
-		Globals.kernelInterruptQueue.add(new Interrupt(Globals.HALT_IRQ, event));
+		Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.HALT, event));
 
 		System.out.println("Program PID: " + currentProcess.pid + " has exited with code " + statusCode);
 		if (statusCode != 0) {
