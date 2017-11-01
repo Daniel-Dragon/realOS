@@ -73,4 +73,15 @@ public class ResidentList {
         }
     }
 
+    public PCB[] getProcessesAsArray() {
+        LinkedList<PCB> processes = new LinkedList<PCB>();
+
+        for (PCB process : processList) {
+            if (process.processState != Globals.ProcessState.TERMINATED)
+                processes.add(process);
+        }
+
+        return processes.toArray(new PCB[processes.size()]);
+    }
+
 }

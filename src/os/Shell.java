@@ -40,6 +40,8 @@ public class Shell {
 		commandList.add(new ShellCommand(shellClearMem, "clearmem", "- removes all programs from memory"));
 		commandList.add(new ShellCommand(shellKill, "kill", "- <pid> Attempts to gracefully shut down the process with PID provided"));
 		commandList.add(new ShellCommand(shellQuantum, "quantum", "- <quantum number> Sets the round robin quantum of the process manager to specified value"));
+		commandList.add(new ShellCommand(shellRunAll, "runall", "- Runs all loaded programs at once."));
+		commandList.add(new ShellCommand(shellKillAll, "killall", "- Removes all currently running processes."));
 		
 	}
 	
@@ -326,6 +328,22 @@ public class Shell {
 
 			Globals.processManager.setQuantum(quantum);
 			Globals.console.putText("Quantum has been set to " + String.valueOf(quantum));
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellRunAll = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			Globals.processManager.runAll();
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellKillAll = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			Globals.processManager.killAll();
 			return null;
 		}
 	};
