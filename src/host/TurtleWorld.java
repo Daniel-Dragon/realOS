@@ -358,11 +358,11 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 	    switch(operation) {
             case READ:
                 memPage[segment].setColor(Color.BLUE);
-                memPage[segment].drawString(String.valueOf(value), headingX, headingY);
+                memPage[segment].drawString(String.valueOf(value) + "", headingX, headingY);
                 break;
             case WRITE:
                 memPage[segment].setColor(Color.RED);
-                memPage[segment].drawString(String.valueOf(value), headingX, headingY);
+                memPage[segment].drawString(String.valueOf(value) + "", headingX, headingY);
                 break;
 			case CLEAR:
 				memPage[segment].drawString(" ", headingX, headingY);

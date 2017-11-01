@@ -24,7 +24,7 @@ public class Globals {
 	public static final int DEFAULT_QUANTUM = 6;
 
 	public static final int SEGMENT_SIZE = 256;
-	public static final int NUM_MEM_SEGMENT = 3;
+	public static final int NUM_MEM_SEGMENT = 1;
 
 	/**
 	 * Variables.
