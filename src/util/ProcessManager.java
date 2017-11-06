@@ -2,7 +2,9 @@ package util;
 
 import exceptions.ProgramNotFound;
 import host.Control;
+import os.Interrupt;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -19,7 +21,7 @@ public class ProcessManager {
 
     public void beginExecuting(int pid) {
         if (isProgramInResidentList(pid))
-            host.Control.cpu.loadProgram(getProgram(pid));
+            readyQueue.loadProgram(residentList.getProgram(pid));
     }
 
     public PCB loadProgram(int[] program) {
@@ -37,8 +39,8 @@ public class ProcessManager {
     public void haltProgram(int pid, int statusCode) {
         if (statusCode != 0)
             System.out.println("System exited with status code: " + statusCode);
-        if (residentList.isProgramLoaded(pid)) {
-            PCB process = residentList.getProgram(pid);
+        if (readyQueue.isLoaded(pid)) {
+            PCB process = readyQueue.remove(pid);
             host.Control.cpu.haltProgram();
             Globals.mmu.unload(process.segment);
             Globals.console.putText("Process exited successfully. Cycles used: "
@@ -72,5 +74,41 @@ public class ProcessManager {
 
     public void setQuantum(int quantum) {
         this.quantum = quantum;
+    }
+
+    public void contextSwitch() {
+        Control.cpu.currentProcess = readyQueue.contextSwitch();
+    }
+
+    public void handleCycle() {
+        if (readyQueue.queueSize() != 1 && Globals.OSclock % quantum == 0)
+            contextSwitch();
+        else if (Control.cpu.isExecuting())
+            Control.cpu.cycle();
+        else {
+            Control.cpu.currentProcess = readyQueue.peek();
+            Control.cpu.cycle();
+        }
+    }
+
+    public boolean isReadyQueueEmpty() {
+        return readyQueue.isEmpty();
+    }
+
+    public void runAll() {
+        PCB[] processesLoaded = residentList.getProcessesAsArray();
+        for (PCB process: processesLoaded) {
+            readyQueue.loadProgram(process);
+        }
+    }
+
+    public void killAll() {
+        PCB[] processesRunning = readyQueue.getProcessesAsArray();
+        for (int i = 0; i < processesRunning.length; i++) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("pid", String.valueOf(processesRunning[i].pid));
+            map.put("statusCode", "0");
+            Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.HALT, map));
+        }
     }
 }

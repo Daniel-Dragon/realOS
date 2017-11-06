@@ -51,8 +51,8 @@ public class Kernel {
 		if(! Globals.kernelInterruptQueue.isEmpty()) {
 			Interrupt interrupt = Globals.kernelInterruptQueue.removeFirst();
 			kernelInterruptHandler(interrupt.irq, interrupt.params);
-		} else if(Control.cpu.isExecuting()){
-			Control.cpu.cycle();
+		} else if(!Globals.processManager.isReadyQueueEmpty()){
+			Globals.processManager.handleCycle();
 		} else {
 			kernelTrace("idle");
 		}
