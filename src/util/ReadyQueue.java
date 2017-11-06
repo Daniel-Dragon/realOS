@@ -58,7 +58,7 @@ public class ReadyQueue {
             processQueue.put(processQueue.take());
             return processQueue.peek();
         } catch (InterruptedException e) {
-            //TODO killAll???
+            Globals.processManager.killAll();
             return new PCB();
         }
     }

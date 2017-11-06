@@ -2,6 +2,7 @@ package util;
 
 import exceptions.NoAvailableMemorySegment;
 import host.Memory;
+import host.TurtleWorld;
 import util.Globals;
 import util.Globals.MemoryOperation;
 import util.PCB;
@@ -11,20 +12,17 @@ import java.util.List;
 public class MemoryManagementUnit {
 
     private boolean[] freeSegment;
-    private Memory[] memory;
+    private Memory memory;
     private int[] top;
 
     public MemoryManagementUnit() {
-        freeSegment = new boolean[Globals.world.NUM_MEM_SEGMENT];
+        freeSegment = new boolean[TurtleWorld.NUM_MEM_SEGMENT];
         Arrays.fill(freeSegment, true);
 
 //        top = new int[Globals.world.NUM_MEM_SEGMENT];
 //        Arrays.fill(top, Globals.SEGMENT_SIZE);
 
-        memory = new Memory[Globals.world.NUM_MEM_SEGMENT];
-        for (int i = 0; i < Globals.world.NUM_MEM_SEGMENT; i++) {
-            memory[i] = new Memory();
-        }
+        memory = new Memory();
     }
 
     public PCB load(int[] program) {
@@ -33,7 +31,7 @@ public class MemoryManagementUnit {
             allocate(nextSegment);
             for (int i = 0; i < program.length; i++) {
 
-                memory[nextSegment].set(i, program[i]);
+                memory.set(i + (nextSegment * Globals.SEGMENT_SIZE), program[i]);
                 Globals.world.interactWithMemory(nextSegment, i, program[i], MemoryOperation.WRITE);
             }
             return new PCB(program, nextSegment);
@@ -49,14 +47,14 @@ public class MemoryManagementUnit {
     }
 
     public int read(int segment, int location) {
-        int value = memory[segment].get(location);
+        int value = memory.get(location);
         Globals.world.interactWithMemory(segment, location, value, MemoryOperation.READ);
         return value;
     }
 
     public void write(int segment, int location, int value) {
         Globals.world.interactWithMemory(segment, location, value, MemoryOperation.WRITE);
-        memory[segment].set(location, value);
+        memory.set(location + (segment * Globals.SEGMENT_SIZE), value);
     }
 
 //    public void push(int segment, int value) {
@@ -66,7 +64,7 @@ public class MemoryManagementUnit {
 
     public void push(PCB process, int value) {
         Globals.world.interactWithMemory(process.segment, process.stackPointer, value, MemoryOperation.WRITE);
-        memory[process.segment].set(--process.stackPointer, value);
+        memory.set(--process.stackPointer + (process.segment * Globals.SEGMENT_SIZE), value);
     }
 
 //    public int pop(int segment) {
@@ -78,7 +76,7 @@ public class MemoryManagementUnit {
 //    }
 
     public int pop(PCB process) {
-        int value = memory[process.segment].get(process.stackPointer);
+        int value = memory.get(process.stackPointer + (process.segment * Globals.SEGMENT_SIZE));
         Globals.world.interactWithMemory(process.segment, process.stackPointer, value, MemoryOperation.READ);
         process.stackPointer++;
 
@@ -97,7 +95,7 @@ public class MemoryManagementUnit {
     }
 
     public int findNextFreeSegment() {
-        for (int i = 0; i < Globals.world.NUM_MEM_SEGMENT; i++) {
+        for (int i = 0; i < TurtleWorld.NUM_MEM_SEGMENT; i++) {
             if (isSegmentFree(i))
                 return i;
         }
@@ -107,7 +105,9 @@ public class MemoryManagementUnit {
 
     public void clearMemory() {
         for (int i = 0; i < Globals.NUM_MEM_SEGMENT; i++) {
-            Globals.world.interactWithMemory(i, 0, 0, MemoryOperation.CLEAR);
+            for (int j = 0; j < Globals.SEGMENT_SIZE; j++) {
+                write(i, j, 0);
+            }
             freeSegment[i] = true;
         }
     }

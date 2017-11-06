@@ -16,8 +16,9 @@ public class Globals {
 	public static final double version = 0.01d;
 	public static final String name = "realOS";
 	public static final int CPU_CLOCK_INTERVAL = 100;
-	public enum IRQ {TIMER, KEYBOARD, PROCESS, HALT};
-    public static Thread host;
+	public enum IRQ {TIMER, KEYBOARD, PROCESS, HALT}
+
+	public static Thread host;
     public static final String defaultDateFormat = "yyyy/MM/dd HH:mm:ss";
 	public static final String currentLocation = "You are here.";
 	public static final short asciiValM = 109;
@@ -35,8 +36,9 @@ public class Globals {
 	/*
 	 * Enum
 	 */
-	public enum ProcessState {NEW, READY, RUNNING, WAITING, TERMINATED};
-	public enum MemoryOperation {READ, WRITE, CLEAR};
+	public enum ProcessState {NEW, READY, RUNNING, WAITING, TERMINATED}
+
+	public enum MemoryOperation {READ, WRITE, CLEAR}
 
 	//we need variables that have to do with graphics.
 	

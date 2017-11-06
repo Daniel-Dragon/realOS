@@ -7,7 +7,7 @@ public class Memory {
     private int[] memory;
 
     public Memory() {
-        memory = new int[Globals.SEGMENT_SIZE];
+        memory = new int[Globals.SEGMENT_SIZE * Globals.NUM_MEM_SEGMENT];
         Arrays.fill(memory, 0);
     }
 
