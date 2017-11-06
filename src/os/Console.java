@@ -108,14 +108,13 @@ public class Console implements Input, Output{
 		while(! Globals.kernelInputQueue.isEmpty()) {
 			String next = Globals.kernelInputQueue.removeFirst();
 			if(next.length() > 1) {
-			    //TODO Abstract these codes to Globals.
-                if (next.equals("38:0")) {
+                if (next.equals(Globals.UP_ARROW)) {
                     //Up arrow
                     nextInputBuffer();
-                } else if (next.equals("40:0")) {
+                } else if (next.equals(Globals.DOWN_ARROW)) {
                     //Down arrow
                     prevInputBuffer();
-                } else if (next.equals("9:0")) {
+                } else if (next.equals(Globals.TAB_KEY)) {
                     //Tab key
                     tabComplete();
                 } else {
