@@ -238,7 +238,12 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 			dispPage.drawString("Program Counter: " + Control.cpu.currentProcess.programCounter,  DISPLAY_MARGIN, 40 + DISPLAY_MARGIN);
 			dispPage.drawString("State: " + Control.cpu.currentProcess.getprocessState(),  DISPLAY_MARGIN, 50 + DISPLAY_MARGIN);
 			dispPage.drawString("Stack Pointer: " + Control.cpu.currentProcess.stackPointer,  DISPLAY_MARGIN, 60 + DISPLAY_MARGIN);
-			dispPage.drawString("PID: " + Control.cpu.currentProcess.pid, DISPLAY_MARGIN, 70 + DISPLAY_MARGIN);
+			PCB[] tempPCBs = Globals.processManager.getReadyQueueAsArray();
+			String[] pids = new String[tempPCBs.length];
+			for (int i = 0; i < tempPCBs.length; i++) {
+				pids[i] = String.valueOf(tempPCBs[i].pid);
+			}
+			dispPage.drawString("PID(s): " + String.join(",", pids), DISPLAY_MARGIN, 70 + DISPLAY_MARGIN);
 		} else if (dispPage != null){
 			dispPage.setColor(Color.BLACK);
 			dispPage.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);

@@ -42,6 +42,7 @@ public class Shell {
 		commandList.add(new ShellCommand(shellQuantum, "quantum", "- <quantum number> Sets the round robin quantum of the process manager to specified value"));
 		commandList.add(new ShellCommand(shellRunAll, "runall", "- Runs all loaded programs at once."));
 		commandList.add(new ShellCommand(shellKillAll, "killall", "- Removes all currently running processes."));
+		commandList.add(new ShellCommand(shellPs, "ps", "List currently running processes"));
 		
 	}
 	
@@ -344,6 +345,25 @@ public class Shell {
 		@Override
 		public Object execute(ArrayList<String> in) {
 			Globals.processManager.killAll();
+			return null;
+		}
+	};
+
+	public static ShellCommandFunction shellPs = new ShellCommandFunction() {
+		@Override
+		public Object execute(ArrayList<String> in) {
+			PCB[] processes = Globals.processManager.getReadyQueueAsArray();
+			if (processes.length == 0)
+				Globals.console.putText("No processes running!");
+			else
+			{
+				String[] pids = new String[processes.length];
+				for (int i = 0; i < processes.length; i++) {
+					pids[i] = String.valueOf(processes[i].pid);
+				}
+				Globals.console.putText("PID(s): " + String.join(",", pids));
+
+			}
 			return null;
 		}
 	};

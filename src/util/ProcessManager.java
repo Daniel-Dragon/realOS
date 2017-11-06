@@ -65,9 +65,7 @@ public class ProcessManager {
     }
 
     public void unloadAll() {
-        if (host.Control.cpu.isExecuting()) {
-            haltProgram(Control.cpu.currentProcess.pid, 1);
-        }
+        killAll();
         residentList.unloadAll();
         Globals.mmu.clearMemory();
     }
@@ -81,8 +79,12 @@ public class ProcessManager {
     }
 
     public void handleCycle() {
-        if (readyQueue.queueSize() != 1 && Globals.OSclock % quantum == 0)
+        if (readyQueue.queueSize() != 1 && Globals.OSclock % quantum == 0) {
+            String message = "Context switch from " + String.valueOf(readyQueue.peek().pid) + " to ";
             contextSwitch();
+            message = message + String.valueOf(readyQueue.peek().pid);
+            System.out.println(message);
+        }
         else if (Control.cpu.isExecuting())
             Control.cpu.cycle();
         else {
@@ -110,5 +112,9 @@ public class ProcessManager {
             map.put("statusCode", "0");
             Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.HALT, map));
         }
+    }
+
+    public PCB[] getReadyQueueAsArray() {
+        return readyQueue.getProcessesAsArray();
     }
 }
