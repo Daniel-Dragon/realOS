@@ -80,17 +80,22 @@ public class ProcessManager {
 
     public void handleCycle() {
         if (readyQueue.queueSize() != 1 && Globals.OSclock % quantum == 0) {
-            String message = "Context switch from " + String.valueOf(readyQueue.peek().pid) + " to ";
-            contextSwitch();
-            message = message + String.valueOf(readyQueue.peek().pid);
-            System.out.println(message);
+            Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.CONTEXT_SWITCH, new HashMap<>()));
+//            String message = "Context switch from " + String.valueOf(readyQueue.peek().pid) + " to ";
+//            contextSwitch();
+//            message = message + String.valueOf(readyQueue.peek().pid);
+//            System.out.println(message);
         }
-        else if (Control.cpu.isExecuting())
+        if (Control.cpu.isExecuting())
             Control.cpu.cycle();
         else {
             Control.cpu.currentProcess = readyQueue.peek();
             Control.cpu.cycle();
         }
+    }
+
+    public PCB readyQueuePeek() {
+        return readyQueue.peek();
     }
 
     public boolean isReadyQueueEmpty() {
@@ -116,5 +121,11 @@ public class ProcessManager {
 
     public PCB[] getReadyQueueAsArray() {
         return readyQueue.getProcessesAsArray();
+    }
+
+    public void shutdown() {
+        readyQueue.unloadAll();
+        residentList.unloadAll();
+        Control.cpu.currentProcess = null;
     }
 }

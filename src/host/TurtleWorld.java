@@ -359,22 +359,27 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
         int headingX = 0;
         int headingY = MEM_HEADING;
         int height = 1;
-
-	    switch(operation) {
-            case READ:
-                memPage[segment].setColor(Color.BLUE);
-                memPage[segment].drawString(String.valueOf(value) + "", headingX, headingY);
-                break;
-            case WRITE:
-                memPage[segment].setColor(Color.RED);
-                memPage[segment].drawString(String.valueOf(value) + "", headingX, headingY);
-                break;
-			case CLEAR:
-				memPage[segment].drawString(" ", headingX, headingY);
-				height = Globals.SEGMENT_SIZE;
-			default:
-                //Something went wrong.
-        }
+		try {
+			switch (operation) {
+				case READ:
+					memPage[segment].setColor(Color.BLUE);
+					memPage[segment].drawString(String.valueOf(value) + "", headingX, headingY);
+					break;
+				case WRITE:
+					memPage[segment].setColor(Color.RED);
+					memPage[segment].drawString(String.valueOf(value) + "", headingX, headingY);
+					break;
+				case CLEAR:
+					memPage[segment].drawString(" ", headingX, headingY);
+					height = Globals.SEGMENT_SIZE;
+				default:
+					//Something went wrong.
+			}
+		} catch (NullPointerException e) {
+			//This is an edge case that we can't do a write for SOME reason. It doesn't hurt anything,
+			//but it seems to be thrown when clearmem writes a LOT to the screen at once.
+			System.out.println("Null pointer exception thrown {Segment: " + segment + ", Location: " + location + ", Value: " + value + "}");
+		}
 
 		memPage[segment].fillRect(MEM_MARGIN, location + MEM_HEADING + MEM_MARGIN, MEM_WIDTH - (2 * MEM_MARGIN), height);
 

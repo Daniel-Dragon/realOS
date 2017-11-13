@@ -59,6 +59,7 @@ public class Control {
 	}
 	
 	public static void haltOS() {
+		Globals.processManager.shutdown();
 		Globals.world.setMessage("System is halted...");
 		Control.hostLog("Emergency Halt", "host");
 		Control.hostLog("Attempting Kernel Shutdown", "host");

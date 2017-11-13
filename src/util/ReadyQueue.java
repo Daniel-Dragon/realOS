@@ -40,9 +40,8 @@ public class ReadyQueue {
     }
 
     public void unloadAll() {
-        for (PCB process : processQueue) {
-            process.processState = Globals.ProcessState.TERMINATED;
-        }
+        while (processQueue.size() > 0)
+            processQueue.remove();
     }
 
     public boolean isEmpty() {

@@ -82,9 +82,19 @@ public class Kernel {
 			case HALT:
 				Globals.processManager.haltProgram(Integer.parseInt(params.get("pid")), Integer.parseInt(params.get("statusCode")));
 				break;
+			case CONTEXT_SWITCH:
+				handleContextSwitch();
+				break;
 			default:
 				kernelTrapError("Invalid Interrupt Request. irq: " + irq + " params: " + params);
 		}
+	}
+
+	public void handleContextSwitch() {
+		String message = "Context switch from " + String.valueOf(Globals.processManager.readyQueuePeek().pid) + " to ";
+		Globals.processManager.contextSwitch();
+		message = message + String.valueOf(Globals.processManager.readyQueuePeek().pid);
+		System.out.println(message);
 	}
 
 	public void kernelTimerISR() {

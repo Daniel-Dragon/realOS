@@ -16,7 +16,7 @@ public class Globals {
 	public static final double version = 0.01d;
 	public static final String name = "realOS";
 	public static final int CPU_CLOCK_INTERVAL = 100;
-	public enum IRQ {TIMER, KEYBOARD, PROCESS, HALT};
+	public enum IRQ {TIMER, KEYBOARD, PROCESS, HALT, CONTEXT_SWITCH};
 	public static final String UP_ARROW = "38:0";
 	public static final String DOWN_ARROW = "40:0";
 	public static final String TAB_KEY = "9:0";
