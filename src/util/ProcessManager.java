@@ -41,6 +41,7 @@ public class ProcessManager {
             System.out.println("System exited with status code: " + statusCode);
         if (readyQueue.isLoaded(pid)) {
             PCB process = readyQueue.remove(pid);
+            process.processState = Globals.ProcessState.TERMINATED;
             host.Control.cpu.haltProgram();
             Globals.mmu.unload(process.segment);
             Globals.console.putText("Process exited successfully. Cycles used: "
@@ -79,7 +80,8 @@ public class ProcessManager {
     }
 
     public void handleCycle() {
-        if (readyQueue.queueSize() != 1 && Globals.OSclock % quantum == 0) {
+        //Globals.OSclock % quantum == 0
+        if (readyQueue.queueSize() != 1 && readyQueue.peek().accountingInformation % quantum == 0) {
             Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.CONTEXT_SWITCH, new HashMap<>()));
 //            String message = "Context switch from " + String.valueOf(readyQueue.peek().pid) + " to ";
 //            contextSwitch();
