@@ -46,17 +46,6 @@ public class Shell {
 		
 	}
 	
-//	public static ShellCommandFunction shellPrompt = new ShellCommandFunction() {
-//		public Object execute(ArrayList<String> in) {
-//			if (in.size() > 0) {
-//				Globals.osShell.setPrompt(in.get(0));
-//        } else {
-//            Globals.standardOut.putText("Usage: prompt <string>.  Please supply a string.");
-//        }
-//			return null;
-//		}
-//	};
-	
 	public static ShellCommandFunction shellHexDump = new ShellCommandFunction() {
 		public Object execute(ArrayList<String> in) {
 			if (in.size() > 0) {

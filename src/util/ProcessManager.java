@@ -5,8 +5,6 @@ import host.Control;
 import os.Interrupt;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class ProcessManager {
     private ResidentList residentList;
@@ -80,13 +78,9 @@ public class ProcessManager {
     }
 
     public void handleCycle() {
-        //Globals.OSclock % quantum == 0
         if (readyQueue.queueSize() != 1 && readyQueue.peek().accountingInformation % quantum == 0) {
+            //Add interrupt which will handle the context switch next cycle.
             Globals.kernelInterruptQueue.add(new Interrupt(Globals.IRQ.CONTEXT_SWITCH, new HashMap<>()));
-//            String message = "Context switch from " + String.valueOf(readyQueue.peek().pid) + " to ";
-//            contextSwitch();
-//            message = message + String.valueOf(readyQueue.peek().pid);
-//            System.out.println(message);
         }
         if (Control.cpu.isExecuting())
             Control.cpu.cycle();

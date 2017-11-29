@@ -9,11 +9,9 @@ import util.PCB;
 import java.util.LinkedList;
 
 public class Control {
-	private static final String Global = null;
 	public static Kernel kernel;
 	public static CPU cpu;
 	public static TurtleWorld frame;
-	public static LinkedList<PCB> processes = new LinkedList();
 	
 	public static void hostInit() {
 		frame = new TurtleWorld(900, 500);

@@ -48,7 +48,7 @@ public class Kernel {
 	public void kernelOnCPUClockPulse() {
 		Globals.world.message();
 		Globals.world.repaint();
-		if(! Globals.kernelInterruptQueue.isEmpty()) {
+		if(!Globals.kernelInterruptQueue.isEmpty()) {
 			Interrupt interrupt = Globals.kernelInterruptQueue.removeFirst();
 			kernelInterruptHandler(interrupt.irq, interrupt.params);
 		} else if(!Globals.processManager.isReadyQueueEmpty()){

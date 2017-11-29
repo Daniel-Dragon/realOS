@@ -13,14 +13,10 @@ public class MemoryManagementUnit {
 
     private boolean[] freeSegment;
     private Memory memory;
-    private int[] top;
 
     public MemoryManagementUnit() {
         freeSegment = new boolean[TurtleWorld.NUM_MEM_SEGMENT];
         Arrays.fill(freeSegment, true);
-
-//        top = new int[Globals.world.NUM_MEM_SEGMENT];
-//        Arrays.fill(top, Globals.SEGMENT_SIZE);
 
         memory = new Memory();
     }
@@ -57,23 +53,11 @@ public class MemoryManagementUnit {
         memory.set(location + (segment * Globals.SEGMENT_SIZE), value);
     }
 
-//    public void push(int segment, int value) {
-//        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.WRITE);
-//        memory[segment].set(--top[segment], value);
-//    }
 
     public void push(PCB process, int value) {
         Globals.world.interactWithMemory(process.segment, process.stackPointer, value, MemoryOperation.WRITE);
         memory.set(--process.stackPointer + (process.segment * Globals.SEGMENT_SIZE), value);
     }
-
-//    public int pop(int segment) {
-//        int value = memory[segment].get(top[segment]);
-//        Globals.world.interactWithMemory(segment, top[segment], value, MemoryOperation.READ);
-//        top[segment]++;
-//
-//        return value;
-//    }
 
     public int pop(PCB process) {
         int value = memory.get(process.stackPointer + (process.segment * Globals.SEGMENT_SIZE));

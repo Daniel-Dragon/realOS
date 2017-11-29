@@ -228,10 +228,6 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 			dispPage.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 			dispPage.clearRect(DISPLAY_MARGIN, DISPLAY_MARGIN, DISPLAY_WIDTH - 2 * DISPLAY_MARGIN, DISPLAY_HEIGHT - 2 * DISPLAY_MARGIN);
 
-			//dispPage.setColor(Color.BLACK);
-			//dispPage.fillRect(DISPLAY_MARGIN, DISPLAY_MARGIN, DISPLAY_WIDTH - DISPLAY_MARGIN, DISPLAY_HEIGHT - DISPLAY_MARGIN);
-			//dispPage.setColor(Color.WHITE);
-			//Current Instruction, Stack Limit, Current Program Counter Value, Process State, Current Stack Pointer, PID of Process.
 			dispPage.drawString("Process Information", DISPLAY_MARGIN, 10 + DISPLAY_MARGIN);
 			dispPage.drawString("Instruction: " + String.valueOf(Control.cpu.currentProcess.getCurrentInstruction()),  DISPLAY_MARGIN, 20 + DISPLAY_MARGIN);
 			dispPage.drawString("Stack Limit: " + Control.cpu.currentProcess.stackLimit,  DISPLAY_MARGIN, 30 + DISPLAY_MARGIN);
@@ -325,8 +321,6 @@ public class TurtleWorld extends javax.swing.JFrame implements MouseListener{
 		int width = itsPicture.getWidth(this);
 		Image altered = new java.awt.image.BufferedImage (width, height + lineHeight,
 				java.awt.image.BufferedImage.TYPE_INT_RGB);
-
-//		BufferedImage altered = config.createCompatibleImage(itsPicture.getWidth(this), itsPicture.getHeight(this) + lineHeight);
 
 		altered.getGraphics().drawImage(itsPicture, 0, 0, this);
 

@@ -1,6 +1,5 @@
 package util;
 
-import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import exceptions.ProgramNotFound;
