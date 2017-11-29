@@ -7,6 +7,7 @@ import os.Interrupt;
 import java.util.HashMap;
 
 public class ProcessManager {
+    //Also scheduler.
     private ResidentList residentList;
     private ReadyQueue readyQueue;
     private int quantum;
