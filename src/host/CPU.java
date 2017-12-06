@@ -19,10 +19,9 @@ public class CPU {
 		try {
 			executeProgram();
 		} catch (Exception e) {
-			System.out.println("Uncaught exception: " + e.getMessage());
+			System.out.println("Uncaught CPU exception: " + e.getMessage());
 			halt(1);
 		}
-		//executeProgram();
 	}
 
 	public boolean isExecuting() {
@@ -135,7 +134,7 @@ public class CPU {
 
 		switch(instruction) {
 			case 1:
-				//print top value of stack as int
+				//print top https://www.youtube.com/watch?v=ZYPjXz1MVv0 of stack as int
 				Globals.console.putText(String.valueOf(Globals.mmu.pop(currentProcess)));
 
 				break;
