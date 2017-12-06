@@ -134,7 +134,7 @@ public class CPU {
 
 		switch(instruction) {
 			case 1:
-				//print top https://www.youtube.com/watch?v=ZYPjXz1MVv0 of stack as int
+				//print top of stack as int
 				Globals.console.putText(String.valueOf(Globals.mmu.pop(currentProcess)));
 
 				break;
